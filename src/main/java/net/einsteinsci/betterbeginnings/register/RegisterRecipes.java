@@ -447,7 +447,7 @@ public class RegisterRecipes
 
 		// Iron armor
 		AdvancedCraftingHandler.addAdvancedRecipe(new ItemStack(Items.iron_helmet),
-		                                          new Object[] {"ironNugget", 2,
+		                                          new Object[] {"nuggetIron", 2,
 				                                          new ItemStack(RegisterItems.leatherStrip, 3),
 				                                          new ItemStack(Blocks.wool, 2, OreDictionary.WILDCARD_VALUE)},
 		                                          "III", "I I",
