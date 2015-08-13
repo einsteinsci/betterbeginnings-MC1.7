@@ -238,64 +238,6 @@ public class TileEntityObsidianKiln extends TileEntity implements ISidedInventor
 		{
 			Item item = itemStack.getItem();
 
-			if (item instanceof ItemBlock && Block.getBlockFromItem(item) != Blocks.air)
-			{
-				Block block = Block.getBlockFromItem(item);
-
-				// Insert any additional block fuels here
-				if (block == Blocks.wooden_slab)
-				{
-					return 150;
-				}
-
-				if (block.getMaterial() == Material.wood)
-				{
-					return 300;
-				}
-
-				if (block == Blocks.coal_block)
-				{
-					return 16000;
-				}
-			}
-
-			if (item instanceof ItemTool)
-			{
-				if (((ItemTool)item).getToolMaterialName().equals("WOOD") ||
-						((ItemTool)item).getToolMaterialName().equals("noobwood"))
-				{
-					return 200;
-				}
-			}
-			if (item instanceof ItemSword)
-			{
-				if (((ItemSword)item).getToolMaterialName().equals("WOOD") ||
-						((ItemSword)item).getToolMaterialName().equals("noobwood"))
-				{
-					return 200;
-				}
-			}
-			if (item instanceof ItemHoe)
-			{
-				if (((ItemHoe)item).getToolMaterialName().equals("WOOD") ||
-						((ItemHoe)item).getToolMaterialName().equals("noobwood"))
-				{
-					return 200;
-				}
-			}
-			if (item == Items.stick)
-			{
-				return 100;
-			}
-			if (item == Items.coal)
-			{
-				return 1600;
-			}
-			if (item == Item.getItemFromBlock(Blocks.sapling))
-			{
-				return 100;
-			}
-
 			// Blaze Rods and Lava are valid fuel sources for an obsidian kiln.
 			if (item == Items.blaze_rod)
 			{
@@ -306,7 +248,7 @@ public class TileEntityObsidianKiln extends TileEntity implements ISidedInventor
 				return 80000;
 			}
 
-			return GameRegistry.getFuelValue(itemStack);
+			return TileEntityKiln.getItemBurnTime(itemStack);
 		}
 	}
 

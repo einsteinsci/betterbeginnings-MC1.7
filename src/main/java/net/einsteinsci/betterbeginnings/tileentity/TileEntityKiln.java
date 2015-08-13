@@ -4,6 +4,10 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.einsteinsci.betterbeginnings.blocks.BlockKiln;
+import net.einsteinsci.betterbeginnings.items.ItemBonePickaxe;
+import net.einsteinsci.betterbeginnings.items.ItemFlintHatchet;
+import net.einsteinsci.betterbeginnings.items.ItemKnife;
+import net.einsteinsci.betterbeginnings.items.ItemKnifeFlint;
 import net.einsteinsci.betterbeginnings.register.recipe.KilnRecipes;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -254,12 +258,13 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 				{
 					return 16000;
 				}
+			}
 
-				// INFINITE POWER!!!
-				if (block == Blocks.bedrock)
-				{
-					return Short.MAX_VALUE;
-				}
+			// Don't burn these.
+			if (item instanceof ItemKnifeFlint || item instanceof ItemBonePickaxe
+				|| item instanceof ItemFlintHatchet)
+			{
+				return 0;
 			}
 
 			if (item instanceof ItemTool)
