@@ -5,6 +5,10 @@ Better Beginnings mod for Minecraft v1.7.10. Requires Forge (built with 10.13.0.
 
 Kind of complicated. See the [forum topic](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/wip-mods/2192122-betterbeginnings-mod).
 
+1.8 Version:
+-----------
+This repository is for the 1.7.10 branch of BetterBeginnings. It was moved to its own repository because GitHub in IntelliJ can be very finnicky. Source for the 1.8 version can be found [here](https://github.com/einsteinsci/betterbeginnings).
+
 Contributing to this project:
 -----------------------------
 1. Download Forge v10.13.0.1180
