@@ -7,6 +7,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class ItemKnife extends ItemTool
@@ -15,12 +16,12 @@ public class ItemKnife extends ItemTool
 
 	public ItemKnife(ToolMaterial material)
 	{
-		super(DAMAGE, material, GetBreakable());
+		super(DAMAGE, material, getBreakable());
 	}
 
-	public static Set GetBreakable()
+	public static Set getBreakable()
 	{
-		Set s = Sets.newHashSet();
+		Set<Block> s = new HashSet<>();
 
 		// s.add(Blocks.log);
 		// s.add(Blocks.log2);

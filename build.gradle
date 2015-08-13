@@ -15,9 +15,13 @@ buildscript {
     }
 }
 
+apply plugin: 'java'
 apply plugin: 'forge'
 
-version = "MC1.7.10-b0.9.0"
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
+version = "MC1.7.10-b0.9.1-pre1"
 group = "net.einsteinsci.betterbeginnings" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "betterbeginnings"
 

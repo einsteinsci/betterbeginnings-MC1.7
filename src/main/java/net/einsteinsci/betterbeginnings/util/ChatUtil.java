@@ -1,6 +1,9 @@
 package net.einsteinsci.betterbeginnings.util;
 
+import net.einsteinsci.betterbeginnings.ModMain;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.ChatComponentText;
 
 public class ChatUtil
@@ -33,8 +36,23 @@ public class ChatUtil
 	public static final String YELLOW = ESCAPE + "e";
 	public static final String WHITE = ESCAPE + "f";
 
+	public static void sendModChatToPlayer(EntityPlayer player, String message)
+	{
+		sendChatToPlayer(player, ORANGE + "[" + ModMain.NAME + "] " + RESET + message);
+	}
+
 	public static void sendChatToPlayer(EntityPlayer player, String message)
 	{
 		player.addChatMessage(new ChatComponentText(message));
+	}
+
+	public static void sendChatToServer(String message)
+	{
+		ServerConfigurationManager config = MinecraftServer.getServer().getConfigurationManager();
+		for (Object aPlayerEntityList : config.playerEntityList)
+		{
+			EntityPlayer player = (EntityPlayer)aPlayerEntityList;
+			player.addChatComponentMessage(new ChatComponentText(message));
+		}
 	}
 }

@@ -118,14 +118,11 @@ public class BBEventHandler
 	@SubscribeEvent
 	public void onBlockBreak(BlockEvent.BreakEvent e)
 	{
-		Block block = e.block;
-		EntityPlayer player = e.getPlayer();
-		ItemStack heldItemStack = player.getHeldItem();
-
-		handleWrongToolCompat(e, block, player, heldItemStack);
+		BlockBreakHelper.handleBlockBreaking(e);
 	}
 
 	// Here it is!
+	@Deprecated
 	public void handleWrongToolCompat(BlockEvent.BreakEvent e, Block block, EntityPlayer player, ItemStack held)
 	{
 		boolean correctTool = false;
@@ -211,6 +208,7 @@ public class BBEventHandler
 		}
 	}
 
+	@Deprecated
 	private boolean shouldBePickaxe(Block block)
 	{
 		List<Block> should = new ArrayList<Block>();
@@ -242,6 +240,7 @@ public class BBEventHandler
 		return should.contains(block);
 	}
 
+	@Deprecated
 	private boolean shouldBeNull(Block block)
 	{
 		String blockName = Block.blockRegistry.getNameForObject(block);
