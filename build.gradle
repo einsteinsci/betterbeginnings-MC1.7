@@ -21,12 +21,12 @@ apply plugin: 'forge'
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
-version = "MC1.7.10-b0.9.2-pre1"
+version = "MC1.7.10-b0.9.2-pre2"
 group = "net.einsteinsci.betterbeginnings" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "betterbeginnings"
 
 minecraft {
-    version = "1.7.10-10.13.2.1230"
+    version = "1.7.10-10.13.4.1448-1.7.10" // That's kinda weird...
     assetDir = "eclipse/assets"
 }
 
