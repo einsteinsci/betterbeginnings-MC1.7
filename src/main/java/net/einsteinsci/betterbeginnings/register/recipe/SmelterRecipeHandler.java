@@ -14,7 +14,7 @@ public class SmelterRecipeHandler
 
 	private Map experienceList = new HashMap();
 
-	private List<SmelterRecipe> recipes = new ArrayList<SmelterRecipe>();
+	private List<SmelterRecipe> recipes = new ArrayList<>();
 
 	private SmelterRecipeHandler()
 	{
@@ -136,5 +136,10 @@ public class SmelterRecipeHandler
 		}
 
 		return 0.0f;
+	}
+
+	public static List<SmelterRecipe> getRecipes()
+	{
+		return smelting().recipes;
 	}
 }
