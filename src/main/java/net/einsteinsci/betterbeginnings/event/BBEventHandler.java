@@ -38,7 +38,8 @@ public class BBEventHandler
 	{
 		if (BBConfig.greetUser)
 		{
-			ChatUtil.sendChatToPlayer(e.player, ChatUtil.LIME + "Better Beginnings 0.9.1 loaded successfully.");
+			ChatUtil.sendChatToPlayer(e.player, ChatUtil.LIME + "Better Beginnings " + ModMain.VERSION +
+				" loaded successfully.");
 		}
 	}
 	
