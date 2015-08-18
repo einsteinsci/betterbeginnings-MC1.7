@@ -1,7 +1,7 @@
 Better Beginnings Mod
 =========
 
-Better Beginnings mod for Minecraft v1.7.10. Requires Forge (built with 10.13.0.1180).
+Better Beginnings mod for Minecraft v1.7.10. Requires Forge (built with 10.13.3.1448).
 
 Kind of complicated. See the [forum topic](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/wip-mods/2192122-betterbeginnings-mod).
 
