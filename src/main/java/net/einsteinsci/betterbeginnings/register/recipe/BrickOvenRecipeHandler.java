@@ -209,8 +209,8 @@ public class BrickOvenRecipeHandler
 		return false;
 	}
 
-	public List getRecipeList()
+	public static List<IBrickOvenRecipe> getRecipeList()
 	{
-		return recipes;
+		return instance().recipes;
 	}
 }

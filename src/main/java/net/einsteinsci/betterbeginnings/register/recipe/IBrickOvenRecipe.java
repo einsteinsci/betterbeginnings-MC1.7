@@ -28,4 +28,6 @@ public interface IBrickOvenRecipe
 	boolean contains(ItemStack stack);
 
 	ItemStack getRecipeOutput();
+
+	ItemStack[] getInputs();
 }
