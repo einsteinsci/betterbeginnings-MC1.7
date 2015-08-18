@@ -11,7 +11,7 @@ This repository is for the 1.7.10 branch of BetterBeginnings. It was moved to it
 
 Contributing to this project:
 -----------------------------
-1. Download Forge v10.13.0.1180
+1. Download Forge v10.13.3.1448
 2. Setup with gradlew setupDecompWorkspace and gradlew eclipse
 3. Fork and clone this repository in a separate folder
 4. Add a new project, with src/main/java and src/main/resources
