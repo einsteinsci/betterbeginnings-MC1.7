@@ -84,6 +84,8 @@ public class RegisterRecipes
 		BrickOvenRecipeHandler.addShapedRecipe(new ItemStack(Items.cookie, 8), "WCW",
 			'W', Items.wheat,
 			'C', new ItemStack(Items.dye, 1, 3)); // Cocoa bean
+		BrickOvenRecipeHandler.addShapedRecipe(new ItemStack(RegisterItems.marshmallow, 3),
+			" S ", "SSS", " S ", 'S', Items.sugar);
 
 		BrickOvenRecipeHandler.addShapelessRecipe(new ItemStack(Items.mushroom_stew), Blocks.brown_mushroom,
 		    Blocks.red_mushroom, Items.bowl);
