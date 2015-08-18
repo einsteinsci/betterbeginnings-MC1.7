@@ -13,7 +13,7 @@ public class RemoveRecipes
 {
 	public static void remove()
 	{
-		List<Item> removedRecipes = new ArrayList<Item>();
+		List<Item> removedRecipes = new ArrayList<>();
 
 		// Be sure to get the correct quantity and damage
 
@@ -57,16 +57,25 @@ public class RemoveRecipes
 				removedRecipes.add(Item.getItemFromBlock(Blocks.hopper));
 				removedRecipes.add(Item.getItemFromBlock(Blocks.activator_rail));
 				removedRecipes.add(Item.getItemFromBlock(Blocks.dropper));
+				removedRecipes.add(Item.getItemFromBlock(Blocks.jukebox));
+				removedRecipes.add(Item.getItemFromBlock(Blocks.redstone_lamp));
+				removedRecipes.add(Item.getItemFromBlock(Blocks.ender_chest));
+				removedRecipes.add(Item.getItemFromBlock(Blocks.heavy_weighted_pressure_plate));
+				removedRecipes.add(Item.getItemFromBlock(Blocks.light_weighted_pressure_plate));
+				removedRecipes.add(Item.getItemFromBlock(Blocks.daylight_detector));
 				removedRecipes.add(Items.minecart);
 				removedRecipes.add(Items.compass);
 				removedRecipes.add(Items.clock);
 				removedRecipes.add(Items.bed);
 				removedRecipes.add(Items.brewing_stand);
 				removedRecipes.add(Items.cauldron);
+				removedRecipes.add(Items.item_frame);
+				removedRecipes.add(Items.comparator);
 			}
 
 			removedRecipes.add(Items.bow);
 			removedRecipes.add(Items.fishing_rod);
+			removedRecipes.add(Items.shears);
 
 			removedRecipes.add(Items.leather_helmet);
 			removedRecipes.add(Items.leather_chestplate);
@@ -100,6 +109,17 @@ public class RemoveRecipes
 			removedRecipes.add(Items.diamond_chestplate);
 			removedRecipes.add(Items.diamond_leggings);
 			removedRecipes.add(Items.diamond_boots);
+
+			removedRecipes.add(Items.golden_sword);
+			removedRecipes.add(Items.golden_pickaxe);
+			removedRecipes.add(Items.golden_axe);
+			removedRecipes.add(Items.golden_shovel);
+			removedRecipes.add(Items.golden_hoe);
+
+			removedRecipes.add(Items.golden_helmet);
+			removedRecipes.add(Items.golden_chestplate);
+			removedRecipes.add(Items.golden_leggings);
+			removedRecipes.add(Items.golden_boots);
 		}
 
 		// Food that should be cooked in ovens
@@ -134,7 +154,7 @@ public class RemoveRecipes
 
 	public static void removeFurnaceRecipes()
 	{
-		List<ItemStack> vanillaSmeltingOutputs = new ArrayList<ItemStack>();
+		List<ItemStack> vanillaSmeltingOutputs = new ArrayList<>();
 
 		vanillaSmeltingOutputs.add(new ItemStack(Items.baked_potato));
 		vanillaSmeltingOutputs.add(new ItemStack(Items.brick));
