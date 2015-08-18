@@ -1,6 +1,7 @@
 package net.einsteinsci.betterbeginnings.register;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.einsteinsci.betterbeginnings.config.BBConfig;
 import net.einsteinsci.betterbeginnings.items.*;
 import net.einsteinsci.betterbeginnings.items.ItemCloth;
 import net.minecraft.init.Items;
@@ -13,10 +14,9 @@ public class RegisterItems
 {
 	public static final ToolMaterial noobWood = EnumHelper.addToolMaterial("noobwood", 0, 60, 2.0f, -4, 35);
 	public static final Item noobWoodSword = new NoobWoodSword(noobWood);
-	public static final ItemArmor.ArmorMaterial armorMaterialCloth = EnumHelper.addArmorMaterial("CLOTH_REALLY",
-	                                                                                             5,
-	                                                                                             new int[] {1, 3, 2, 1},
-	                                                                                             25);
+	public static final ItemArmor.ArmorMaterial armorMaterialCloth =
+		EnumHelper.addArmorMaterial("CLOTH_REALLY", 5, new int[] {1, 3, 2, 1}, 25);
+
 	public static final Item clothHat = new ItemClothArmor(armorMaterialCloth, 0, "clothHat");
 	public static final Item clothShirt = new ItemClothArmor(armorMaterialCloth, 1, "clothShirt");
 	public static final Item clothPants = new ItemClothArmor(armorMaterialCloth, 2, "clothPants");
@@ -40,8 +40,8 @@ public class RegisterItems
 	public static final Item marshmallow = new ItemMarshmallow();
 	public static final Item marshmallowCooked = new ItemMarshmallowCooked();
 	public static final Item roastingStick = new ItemRoastingStick();
-	public static final Item roastingStickrawMallow = new ItemRoastingStickMallow(false);
-	public static final Item roastingStickcookedMallow = new ItemRoastingStickMallow(true);
+	public static final Item roastingStickRawMallow = new ItemRoastingStickMallow(false);
+	public static final Item roastingStickCookedMallow = new ItemRoastingStickMallow(true);
 	public static final Item twine = new ItemTwine();
 	public static final Item rockHammer = new ItemRockHammer(ToolMaterial.IRON);
 	public static final Item pan = new ItemPan();
@@ -73,8 +73,8 @@ public class RegisterItems
 		RegisterHelper.registerItem(marshmallow);
 		RegisterHelper.registerItem(roastingStick);
 		RegisterHelper.registerItem(marshmallowCooked);
-		RegisterHelper.registerItem(roastingStickcookedMallow);
-		RegisterHelper.registerItem(roastingStickrawMallow);
+		RegisterHelper.registerItem(roastingStickCookedMallow);
+		RegisterHelper.registerItem(roastingStickRawMallow);
 
 		RegisterHelper.registerItem(clothHat);
 		RegisterHelper.registerItem(clothShirt);
@@ -106,9 +106,12 @@ public class RegisterItems
 		((ItemFood)GameRegistry.findItem("minecraft", "porkchop")).setPotionEffect(17, 25, 0, 25);
 		((ItemFood)GameRegistry.findItem("minecraft", "fish")).setPotionEffect(17, 30, 1, 60); // Both fish types here
 
-		GameRegistry.findItem("minecraft", "minecart").setMaxStackSize(16);
-		GameRegistry.findItem("minecraft", "wooden_door").setMaxStackSize(16);
-		GameRegistry.findItem("minecraft", "iron_door").setMaxStackSize(16);
-		GameRegistry.findItem("minecraft", "potion").setMaxStackSize(16);
+		if (BBConfig.makeStuffStackable)
+		{
+			GameRegistry.findItem("minecraft", "minecart").setMaxStackSize(16);
+			GameRegistry.findItem("minecraft", "wooden_door").setMaxStackSize(16);
+			GameRegistry.findItem("minecraft", "iron_door").setMaxStackSize(16);
+			GameRegistry.findItem("minecraft", "potion").setMaxStackSize(16);
+		}
 	}
 }

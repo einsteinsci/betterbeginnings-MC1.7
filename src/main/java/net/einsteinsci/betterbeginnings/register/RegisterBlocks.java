@@ -2,6 +2,7 @@ package net.einsteinsci.betterbeginnings.register;
 
 import net.einsteinsci.betterbeginnings.blocks.*;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RegisterBlocks
@@ -56,5 +57,6 @@ public class RegisterBlocks
 	public static void oreDictionary()
 	{
 		OreDictionary.registerOre("craftingTableWood", doubleWorkbench);
+		OreDictionary.registerOre("craftingTableWood", Blocks.crafting_table);
 	}
 }

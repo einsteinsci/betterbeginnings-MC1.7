@@ -17,7 +17,7 @@ public class ItemRoastingStick extends Item
 		//shouldRotateAroundWhenRendering();
 		setTextureName(ModMain.MODID + ":" + getUnlocalizedName().substring(5));
 		setCreativeTab(ModMain.tabBetterBeginnings);
-		setMaxStackSize(5);
+		setMaxStackSize(10);
 	}
 
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -25,7 +25,7 @@ public class ItemRoastingStick extends Item
 		if (player.inventory.hasItemStack(new ItemStack(RegisterItems.marshmallow)))
 		{
 			player.inventory.consumeInventoryItem(RegisterItems.marshmallow);
-			stack = new ItemStack(RegisterItems.roastingStickrawMallow);
+			stack = new ItemStack(RegisterItems.roastingStickRawMallow);
 		}
 		player.inventoryContainer.detectAndSendChanges();
 		return stack;

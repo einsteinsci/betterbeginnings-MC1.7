@@ -16,11 +16,11 @@ public class ItemRoastingStickMallow extends Item
 	{
 		if (cooked)
 		{
-			setUnlocalizedName("roastingStickcookedMallow");
+			setUnlocalizedName("roastingStickCookedMallow");
 		}
 		else
 		{
-			setUnlocalizedName("roastingStickrawMallow");
+			setUnlocalizedName("roastingStickRawMallow");
 		}
 		isCooked = cooked;
 		//shouldRotateAroundWhenRendering();

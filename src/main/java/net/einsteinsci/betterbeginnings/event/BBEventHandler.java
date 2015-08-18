@@ -3,7 +3,6 @@ package net.einsteinsci.betterbeginnings.event;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.registry.GameData;
 import net.einsteinsci.betterbeginnings.ModMain;
 import net.einsteinsci.betterbeginnings.config.BBConfig;
 import net.einsteinsci.betterbeginnings.items.ItemHammer;
@@ -23,7 +22,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.world.EnumDifficulty;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -87,6 +85,16 @@ public class BBEventHandler
 			e.toolTip.add(ChatUtil.BLUE + "Fry stuff over a campfire!");
 		}
 
+		if (item == RegisterItems.fireBow)
+		{
+			e.toolTip.add(ChatUtil.ITALIC + "Not that kind of bow.");
+		}
+
+		if (item == Items.sugar)
+		{
+			e.toolTip.add(ChatUtil.ITALIC + "Yes please!");
+		}
+
 		if (isWIP(e.itemStack))
 		{
 			e.toolTip.add(ChatUtil.RED + "WIP. May not be fully functional.");
@@ -102,8 +110,10 @@ public class BBEventHandler
 		wip.add(new ItemStack(RegisterItems.clothShirt));
 		wip.add(new ItemStack(RegisterItems.clothHat));
 		wip.add(new ItemStack(RegisterItems.roastingStick));
-		wip.add(new ItemStack(RegisterItems.roastingStickrawMallow));
-		wip.add(new ItemStack(RegisterItems.roastingStickcookedMallow));
+		wip.add(new ItemStack(RegisterItems.roastingStickRawMallow));
+		wip.add(new ItemStack(RegisterItems.roastingStickCookedMallow));
+		wip.add(new ItemStack(RegisterItems.fireBow));
+		wip.add(new ItemStack(RegisterBlocks.campfire));
 
 		for (ItemStack test : wip)
 		{

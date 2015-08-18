@@ -1,9 +1,11 @@
 package net.einsteinsci.betterbeginnings.event;
 
 import net.einsteinsci.betterbeginnings.ModMain;
+import net.einsteinsci.betterbeginnings.config.BBConfig;
 import net.einsteinsci.betterbeginnings.items.ItemKnife;
 import net.einsteinsci.betterbeginnings.util.ChatUtil;
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.EnumDifficulty;
@@ -84,9 +86,22 @@ public class BlockBreakHelper
 	// returns whether to cancel drops or not
 	public static void handleBlockBreaking(BlockEvent.BreakEvent e)
 	{
+		if (!BBConfig.moduleBlockBreaking)
+		{
+			return;
+		}
+
 		Block block = e.block;
 		EntityPlayer player = e.getPlayer();
 		ItemStack heldItemStack = player.getHeldItem();
+
+		for (String blockId : BBConfig.alwaysBreakable)
+		{
+			if (block.getUnlocalizedName().equals(blockId))
+			{
+				return;
+			}
+		}
 
 		if (player.capabilities.isCreativeMode)
 		{
@@ -141,7 +156,7 @@ public class BlockBreakHelper
 		{
 			if (usedToolClass == null || usedToolClass.equalsIgnoreCase("null"))
 			{
-				if (e.world.difficultySetting != EnumDifficulty.PEACEFUL)
+				if (e.world.difficultySetting != EnumDifficulty.PEACEFUL && !BBConfig.noDamageOnBadBreak)
 				{
 					player.attackEntityFrom(new DamageSourceFace(block), 6.0f);
 				}
@@ -149,7 +164,7 @@ public class BlockBreakHelper
 				if (!brokenOnce.containsKey(player) || brokenOnce.get(player) == null ||
 					!brokenOnce.get(player).equals(new BlockPos(e.x, e.y, e.z)))
 				{
-					ChatUtil.sendModChatToPlayer(player, "Almost. Once more should do it.");
+					ChatUtil.sendModChatToPlayer(player, I18n.format("blockbreak.fail"));
 					brokenOnce.put(player, new BlockPos(e.x, e.y, e.z));
 
 					// skip other notification
@@ -158,7 +173,7 @@ public class BlockBreakHelper
 				}
 				else
 				{
-					ChatUtil.sendModChatToPlayer(player, "Ouch! But at least it worked.");
+					ChatUtil.sendModChatToPlayer(player, I18n.format("blockbreak.success"));
 					brokenOnce.put(player, null);
 				}
 
@@ -180,9 +195,9 @@ public class BlockBreakHelper
 			ModMain.Log(Level.INFO, "  Minimum harvest level: " + neededHarvestLevel + ", supplied: " +
 				usedHarvestLevel);
 
-			ChatUtil.sendModChatToPlayer(player, "Wrong tool!");
-			ChatUtil.sendModChatToPlayer(player, "Requires " + ChatUtil.LIME + getToolLevelName(neededHarvestLevel) +
-				ChatUtil.RESET + " " + neededToolClass);
+			ChatUtil.sendModChatToPlayer(player, I18n.format("blockbreak.wrongtool"));
+			ChatUtil.sendModChatToPlayer(player, I18n.format("blockbreak.wrongtool.message",
+				getToolLevelName(neededHarvestLevel), neededToolClass));
 
 			e.setCanceled(true);
 		}
@@ -201,7 +216,7 @@ public class BlockBreakHelper
 			case 3:
 				return "diamond";
 			default:
-				return "Level " + level;
+				return "level " + level;
 		}
 	}
 }
