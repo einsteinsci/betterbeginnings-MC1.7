@@ -1,14 +1,23 @@
 package net.einsteinsci.betterbeginnings.tileentity;
 
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.einsteinsci.betterbeginnings.ModMain;
 import net.einsteinsci.betterbeginnings.blocks.BlockCampfire;
+import net.einsteinsci.betterbeginnings.items.ItemBonePickaxe;
+import net.einsteinsci.betterbeginnings.items.ItemFlintHatchet;
+import net.einsteinsci.betterbeginnings.items.ItemKnifeFlint;
 import net.einsteinsci.betterbeginnings.items.ItemPan;
+import net.einsteinsci.betterbeginnings.network.PacketCampfireState;
+import net.einsteinsci.betterbeginnings.network.PacketNetherBrickOvenFuelLevel;
 import net.einsteinsci.betterbeginnings.register.RegisterItems;
 import net.einsteinsci.betterbeginnings.register.recipe.CampfirePanRecipes;
 import net.einsteinsci.betterbeginnings.register.recipe.CampfireRecipes;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -17,6 +26,9 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+
+import java.util.List;
 
 public class TileEntityCampfire extends TileEntity implements IInventory
 {
@@ -34,6 +46,12 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 	public int burnTime;
 	public int currentItemBurnTime;
 	public int decayTime;
+
+	public byte campfireState;
+
+	public static final byte STATE_OFF = 0;
+	public static final byte STATE_BURNING = 1;
+	public static final byte STATE_DECAYING = 2;
 
 	private String campfireName;
 
@@ -67,6 +85,7 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 		cookTime = tagCompound.getShort("CookTime");
 		currentItemBurnTime = getBurnTimeForFuel(stackFuel());
 		decayTime = tagCompound.getShort("DecayTime");
+		campfireState = tagCompound.getByte("CampfireState");
 
 		if (tagCompound.hasKey("CustomName", 8))
 		{
@@ -82,6 +101,8 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 		tagCompound.setShort("BurnTime", (short)burnTime);
 		tagCompound.setShort("CookTime", (short)cookTime);
 		tagCompound.setShort("DecayTIme", (short)decayTime);
+		tagCompound.setByte("CampfireState", campfireState);
+
 		NBTTagList tagList = new NBTTagList();
 
 		for (int i = 0; i < stacks.length; ++i)
@@ -105,22 +126,33 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 	@Override
 	public void updateEntity()
 	{
-		boolean burning = burnTime > 0;
-		boolean dirty = false;
-
-		if (burning)
-		{
-			burnTime--;
-			decayTime = maxDecayTime;
-		}
-		else
-		{
-			decayTime = Math.max(0, decayTime - 1);
-		}
-
 		if (!worldObj.isRemote)
 		{
-			if (burnTime == 0 && canCook() && isDecaying()) //only start fuel if lit (w/ F&S or Fire Bow)
+			boolean burning = burnTime > 0;
+			boolean dirty = false;
+
+			if (burning)
+			{
+				burnTime--;
+				decayTime = maxDecayTime;
+				campfireState = STATE_BURNING;
+			}
+			else
+			{
+				decayTime = Math.max(0, decayTime - 1);
+
+				if (decayTime > 0)
+				{
+					campfireState = STATE_DECAYING;
+				}
+				else
+				{
+					campfireState = STATE_OFF;
+				}
+			}
+
+			//only start fuel if lit (w/ F&S or Fire Bow)
+			if (burnTime == 0 && canCook() && campfireState != STATE_OFF)
 			{
 				burnTime = getBurnTimeForFuel(stackFuel());
 				currentItemBurnTime = burnTime;
@@ -132,7 +164,6 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 
 				if (burning)
 				{
-					dirty = true;
 					if (stackFuel() != null)
 					{
 						stackFuel().stackSize--;
@@ -143,9 +174,11 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 						}
 					}
 				}
+
+				dirty = true;
 			}
 
-			if (isDecaying() && canCook())
+			if (campfireState != STATE_OFF && canCook())
 			{
 				cookTime++;
 				if (cookTime == maxCookTime)
@@ -158,18 +191,41 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 			else
 			{
 				cookTime = 0;
+				dirty = true;
 			}
-		}
 
-		if (burning != decayTime > 0)
-		{
-			dirty = true;
-			BlockCampfire.updateBlockState(decayTime > 0, worldObj, xCoord, yCoord, zCoord);
-		}
+			if (burning != decayTime > 0)
+			{
+				dirty = true;
+			}
 
-		if (dirty)
-		{
-			markDirty();
+			BlockCampfire.updateBlockState(campfireState == STATE_BURNING, worldObj,
+				xCoord, yCoord, zCoord);
+
+			if (dirty)
+			{
+				markDirty();
+			}
+
+			NetworkRegistry.TargetPoint point = new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId,
+				xCoord, yCoord, zCoord, 128.0d);
+			ModMain.network.sendToAllAround(new PacketCampfireState(xCoord, yCoord, zCoord, campfireState),
+				point);
+
+			if (campfireState == STATE_BURNING)
+			{
+				// Light idiots on fire
+				List idiots = worldObj.getEntitiesWithinAABB(EntityLivingBase.class,
+					AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord + 1, yCoord + 1, zCoord + 1));
+				for (Object obj : idiots)
+				{
+					if (obj instanceof EntityLivingBase)
+					{
+						EntityLivingBase idiot = (EntityLivingBase)obj;
+						idiot.setFire(5);
+					}
+				}
+			}
 		}
 	}
 
@@ -239,7 +295,7 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 
 			if (stacks[SLOT_PAN] != null)
 			{
-				if (stacks[SLOT_PAN].getItem() == RegisterItems.pan)
+				if (stacks[SLOT_PAN].getItem() instanceof ItemPan)
 				{
 					int damage = stacks[SLOT_PAN].getItemDamage();
 					stacks[SLOT_PAN].setItemDamage(damage + 1);
@@ -290,10 +346,6 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 			{
 				return 600;
 			}
-			if (block == Blocks.coal_block)
-			{
-				return 16000;
-			}
 			if (block == Blocks.wooden_slab)
 			{
 				return 300;
@@ -306,6 +358,12 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 
 		if (item != null)
 		{
+			if (item instanceof ItemBonePickaxe || item instanceof ItemFlintHatchet ||
+				item instanceof ItemKnifeFlint)
+			{
+				return 0;
+			}
+
 			if (item instanceof ItemTool)
 			{
 				if (((ItemTool)item).getToolMaterialName().equals("WOOD") ||
@@ -333,10 +391,6 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 			if (item == Items.stick)
 			{
 				return 200;
-			}
-			if (item == Items.coal)
-			{
-				return 1600;
 			}
 		}
 
@@ -418,7 +472,7 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 	@Override
 	public int getInventoryStackLimit()
 	{
-		return 16; //Not 64
+		return 64;
 	}
 
 	@Override
@@ -436,18 +490,17 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 
 	@Override
 	public void openInventory()
-	{
-	}
+	{ }
 
 	@Override
 	public void closeInventory()
-	{
-	}
+	{ }
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack)
 	{
-		return slot == SLOT_INPUT || slot == SLOT_PAN && isPan(stack) || slot == SLOT_FUEL && isItemFuel(stack);
+		return slot == SLOT_INPUT || slot == SLOT_PAN && isPan(stack) ||
+			slot == SLOT_FUEL && isItemFuel(stack);
 	}
 
 	private static boolean isPan(ItemStack stack)
@@ -465,8 +518,13 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 		return getBurnTimeForFuel(itemstack1) > 0;
 	}
 
-	public void LightFuel()
+	public void lightFuel()
 	{
+		if (campfireState == STATE_BURNING)
+		{
+			return;
+		}
+
 		int maxBurn = getBurnTimeForFuel(stackFuel());
 		if (maxBurn > 0)
 		{
@@ -474,6 +532,19 @@ public class TileEntityCampfire extends TileEntity implements IInventory
 			{
 				burnTime = maxBurn;
 				decayTime = maxDecayTime;
+				campfireState = STATE_BURNING;
+
+				// consume fuel
+				currentItemBurnTime = burnTime;
+				if (stackFuel() != null)
+				{
+					stackFuel().stackSize--;
+
+					if (stackFuel().stackSize == 0)
+					{
+						stacks[SLOT_FUEL] = stackFuel().getItem().getContainerItem(stackFuel());
+					}
+				}
 			}
 		}
 	}

@@ -45,6 +45,7 @@ public class RegisterItems
 	public static final Item twine = new ItemTwine();
 	public static final Item rockHammer = new ItemRockHammer(ToolMaterial.IRON);
 	public static final Item pan = new ItemPan();
+	public static final Item spit = new ItemSpit();
 
 	public static void register()
 	{
@@ -69,6 +70,7 @@ public class RegisterItems
 		RegisterHelper.registerItem(fireBow);
 		RegisterHelper.registerItem(rockHammer);
 		RegisterHelper.registerItem(pan);
+		RegisterHelper.registerItem(spit);
 
 		RegisterHelper.registerItem(marshmallow);
 		RegisterHelper.registerItem(roastingStick);

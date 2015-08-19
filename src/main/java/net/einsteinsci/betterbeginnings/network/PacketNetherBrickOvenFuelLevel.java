@@ -10,8 +10,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class PacketNetherBrickOvenFuelLevel implements IMessage
 {
-	public static final int INTSIZE = 4;
-
 	int xPos, yPos, zPos;
 
 	FluidStack fluid;

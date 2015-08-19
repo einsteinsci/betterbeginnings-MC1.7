@@ -36,7 +36,7 @@ public class BBEventHandler
 	{
 		if (BBConfig.greetUser)
 		{
-			ChatUtil.sendChatToPlayer(e.player, ChatUtil.LIME + "Better Beginnings " + ModMain.VERSION +
+			ChatUtil.sendChatToPlayer(e.player, ChatUtil.LIME + "BetterBeginnings " + ModMain.VERSION +
 				" loaded successfully.");
 		}
 	}
@@ -59,6 +59,11 @@ public class BBEventHandler
 		{
 			e.toolTip.add("Not to be confused with charcoal");
 		}
+
+		if (item == RegisterItems.spit)
+		{
+			e.toolTip.add(ChatUtil.BLUE + "Not for roasting people");
+		}
 		
 		if (item == RegisterItems.ironNugget)
 		{
@@ -77,7 +82,8 @@ public class BBEventHandler
 
 		if (item == RegisterItems.testItem)
 		{
-			e.toolTip.add(ChatUtil.PINK + "For dev testing only. What it does changes from one version to the next.");
+			e.toolTip.add(ChatUtil.PINK + "For dev testing only. What it does");
+			e.toolTip.add(ChatUtil.PINK + "changes from one version to the next.");
 		}
 
 		if (item == RegisterItems.pan)
@@ -150,7 +156,7 @@ public class BBEventHandler
 					{
 						TileEntityCampfire campfire = (TileEntityCampfire)e.world.getTileEntity(e.x, e.y, e.z);
 
-						campfire.LightFuel(); // Light it.
+						campfire.lightFuel(); // Light it.
 						e.entityPlayer.getHeldItem().damageItem(1, e.entityPlayer);
 					}
 				}

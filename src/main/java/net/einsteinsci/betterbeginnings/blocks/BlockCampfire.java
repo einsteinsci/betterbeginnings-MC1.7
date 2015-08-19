@@ -29,11 +29,11 @@ public class BlockCampfire extends BlockContainer
 
 	public BlockCampfire(boolean lit)
 	{
-		super(Material.rock);
-		setResistance(5.0F);
-		setHardness(2.0F);
+		super(Material.wood);
+		setResistance(3.0F);
+		setHardness(0.5F);
 		setBlockTextureName(ModMain.MODID + ":CampfireImg");
-		setBlockBounds(0.1F, 0.0F, 0.1F, 1.0F, 0.5F, 1.0F);
+		setBlockBounds(0.1F, 0.0F, 0.1F, 0.9F, 0.5F, 0.9F);
 
 		if (!lit)
 		{
@@ -43,6 +43,7 @@ public class BlockCampfire extends BlockContainer
 		else
 		{
 			setBlockName("campfireLit");
+			setLightLevel(0.875f);
 		}
 
 		isLit = isAlteringLit;
@@ -92,7 +93,7 @@ public class BlockCampfire extends BlockContainer
 	{
 		TileEntityCampfire tile = (TileEntityCampfire)world.getTileEntity(x, y, z);
 
-		if (tile.isBurning())
+		if (tile.campfireState == TileEntityCampfire.STATE_BURNING)
 		{
 			for (int i = 0; i < 3; i++)
 			{
@@ -106,7 +107,7 @@ public class BlockCampfire extends BlockContainer
 				world.spawnParticle("flame", x + rx, y + ry, z + rz, vx, vy, vz);
 			}
 		}
-		else if (tile.isDecaying())
+		else if (tile.campfireState == TileEntityCampfire.STATE_DECAYING)
 		{
 			for (int i = 0; i < 2; i++)
 			{
@@ -128,14 +129,10 @@ public class BlockCampfire extends BlockContainer
 		return Item.getItemFromBlock(RegisterBlocks.campfire);
 	}
 
-	/**
-	 * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
-	 */
 	public boolean canPlaceBlockAt(World world, int x, int y, int z)
 	{
-		return world.getBlock(x, y, z)
-				.isReplaceable(world, x, y, z) && World
-				.doesBlockHaveSolidTopSurface(world, x, y - 1, z);
+		return world.getBlock(x, y, z).isReplaceable(world, x, y, z) &&
+			World.doesBlockHaveSolidTopSurface(world, x, y - 1, z);
 	}
 
 	@Override
@@ -167,7 +164,7 @@ public class BlockCampfire extends BlockContainer
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
 	{
-		if (!isLit)
+		if (!isAlteringLit)
 		{
 			TileEntityCampfire campfire = (TileEntityCampfire)world.getTileEntity(x, y, z);
 			if (campfire != null)

@@ -26,7 +26,7 @@ public class ItemRoastingStickMallow extends Item
 		//shouldRotateAroundWhenRendering();
 		setTextureName(ModMain.MODID + ":" + getUnlocalizedName().substring(5));
 		setCreativeTab(ModMain.tabBetterBeginnings);
-		setMaxStackSize(1);
+		setMaxStackSize(10);
 	}
 
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)

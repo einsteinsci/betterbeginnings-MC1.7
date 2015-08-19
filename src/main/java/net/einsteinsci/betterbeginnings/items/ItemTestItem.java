@@ -1,6 +1,10 @@
 package net.einsteinsci.betterbeginnings.items;
 
 import net.einsteinsci.betterbeginnings.ModMain;
+import net.einsteinsci.betterbeginnings.blocks.BlockCampfire;
+import net.einsteinsci.betterbeginnings.register.RegisterBlocks;
+import net.einsteinsci.betterbeginnings.tileentity.TileEntityCampfire;
+import net.einsteinsci.betterbeginnings.util.ChatUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -26,8 +30,19 @@ public class ItemTestItem extends Item
 		String blockName = tested.getUnlocalizedName().substring(5);
 		ChatComponentTranslation trans = new ChatComponentTranslation(blockName);
 		trans.appendText(" : " + world.getBlockMetadata(x, y, z));
-		player.addChatMessage(trans);
-		
+		//player.addChatMessage(trans);
+
+		if (tested instanceof BlockCampfire)
+		{
+			boolean lit = tested == RegisterBlocks.campfireLit;
+
+			ChatUtil.sendChatToPlayer(player, "Lit: " + lit);
+
+			TileEntityCampfire tile = (TileEntityCampfire)world.getTileEntity(x, y, z);
+
+			ChatUtil.sendChatToPlayer(player, "State: " + tile.campfireState);
+		}
+
 		/*
 		 * if (tested == RegisterBlocks.kiln || tested == RegisterBlocks.kilnLit) { TileEntityKiln kiln =
 		 * (TileEntityKiln)world.getTileEntity(x, y, z);
