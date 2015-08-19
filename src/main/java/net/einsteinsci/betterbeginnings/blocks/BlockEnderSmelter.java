@@ -123,7 +123,7 @@ public class BlockEnderSmelter extends BlockContainer
 			float f1 = y + random.nextFloat() * 6.0f / 16.0f;
 			float f2 = z + 0.5f;
 
-			float f3 = 0.5f;
+			float f3 = 0.51f;
 			float f4 = random.nextFloat() * 0.6f - 0.2f;
 
 			if (dir == 4)

@@ -16,12 +16,16 @@ public class ContainerKiln extends Container
 	private int lastBurnTime;
 	private int lastItemBurnTime;
 
+	public static final int SLOT_INPUT = TileEntityKiln.SLOT_INPUT;
+	public static final int SLOT_FUEL = TileEntityKiln.SLOT_FUEL;
+	public static final int SLOT_OUTPUT = TileEntityKiln.SLOT_OUTPUT;
+
 	public ContainerKiln(InventoryPlayer playerInv, TileEntityKiln tileEntityKiln)
 	{
 		tileKiln = tileEntityKiln;
-		addSlotToContainer(new Slot(tileEntityKiln, 0, 56, 17));
-		addSlotToContainer(new Slot(tileEntityKiln, 1, 56, 53));
-		addSlotToContainer(new SlotFurnace(playerInv.player, tileEntityKiln, 2, 116, 35));
+		addSlotToContainer(new Slot(tileEntityKiln, SLOT_INPUT, 56, 17));
+		addSlotToContainer(new Slot(tileEntityKiln, SLOT_FUEL, 56, 53));
+		addSlotToContainer(new SlotFurnace(playerInv.player, tileEntityKiln, SLOT_OUTPUT, 116, 35));
 
 		int i;
 		for (i = 0; i < 3; ++i)
@@ -87,49 +91,49 @@ public class ContainerKiln extends Container
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
 
-			if (par2 == 2)
+			if (par2 == SLOT_OUTPUT)
 			{
-				if (!mergeItemStack(itemstack1, 3, 39, true))
+				if (!mergeItemStack(itemstack1, SLOT_OUTPUT + 1, 39, true))
 				{
 					return null;
 				}
 				slot.onSlotChange(itemstack1, itemstack);
 			}
-			else if (par2 != 1 && par2 != 0)
+			else if (par2 != SLOT_FUEL && par2 != SLOT_INPUT)
 			{
 				if (KilnRecipes.smelting().getSmeltingResult(itemstack1) != null)
 				{
-					if (!mergeItemStack(itemstack1, 0, 1, false))
+					if (!mergeItemStack(itemstack1, SLOT_INPUT, SLOT_INPUT + 1, false))
 					{
 						return null;
 					}
 				}
 				else if (TileEntityKiln.isItemFuel(itemstack1))
 				{
-					if (!mergeItemStack(itemstack1, 1, 2, false))
+					if (!mergeItemStack(itemstack1, SLOT_FUEL, SLOT_FUEL + 1, false))
 					{
 						return null;
 					}
 				}
-				else if (par2 >= 3 && par2 < 30)
+				else if (par2 > SLOT_OUTPUT && par2 < 30)
 				{
 					if (!mergeItemStack(itemstack1, 30, 39, false))
 					{
 						return null;
 					}
 				}
-				else if (par2 >= 30 && par2 < 39 && !mergeItemStack(itemstack1, 3, 30, false))
+				else if (par2 >= 30 && par2 < 39 && !mergeItemStack(itemstack1, SLOT_OUTPUT + 1, 30, false))
 				{
 					return null;
 				}
 			}
-			else if (!mergeItemStack(itemstack1, 3, 39, false))
+			else if (!mergeItemStack(itemstack1, SLOT_OUTPUT + 1, 39, true))
 			{
 				return null;
 			}
 			if (itemstack1.stackSize == 0)
 			{
-				slot.putStack((ItemStack)null);
+				slot.putStack(null);
 			}
 			else
 			{
@@ -167,38 +171,4 @@ public class ContainerKiln extends Container
 	{
 		return tileKiln.isUseableByPlayer(player);
 	}
-	
-	/*
-	 * @Override public ItemStack transferStackInSlot(EntityPlayer player, int
-	 * intoSlot) { ItemStack stack = null; Slot slot =
-	 * (Slot)this.inventorySlots.get(intoSlot);
-	 * 
-	 * if (slot != null && slot.getHasStack()) { ItemStack itemStack1 =
-	 * slot.getStack(); stack = itemStack1.copy();
-	 * 
-	 * if (intoSlot == 2) { if (!this.mergeItemStack(itemStack1, 3, 39, true)) {
-	 * return null; } slot.onSlotChange(itemStack1, stack); } else if (intoSlot
-	 * != 1 && intoSlot != 0) { if
-	 * (FurnaceRecipes.smelting().getSmeltingResult(itemStack1) != null) { if
-	 * (!this.mergeItemStack(itemStack1, 0, 1, false)) { return null; } } else
-	 * if (TileEntityKiln.isItemFuel(itemStack1)) { if
-	 * (!this.mergeItemStack(itemStack1, 1, 2, false)) { return null; } } else
-	 * if (intoSlot >= 3 && intoSlot < 30) { if
-	 * (!this.mergeItemStack(itemStack1, 30, 39, false)) { return null; } } else
-	 * if (intoSlot >= 30 && intoSlot < 39 && !this.mergeItemStack(itemStack1,
-	 * 3, 30, false)) { return null; } else if (!this.mergeItemStack(itemStack1,
-	 * 3, 39, false)) { return null; }
-	 * 
-	 * if (itemStack1.stackSize == 0) { slot.putStack(null); } else {
-	 * slot.onSlotChanged(); }
-	 * 
-	 * if (itemStack1.stackSize == stack.stackSize) { return null; }
-	 * 
-	 * slot.onPickupFromSlot(player, itemStack1); }
-	 * 
-	 * return stack; }
-	 * 
-	 * return null; }
-	 */
-
 }

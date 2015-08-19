@@ -17,9 +17,6 @@ import net.minecraft.tileentity.TileEntity;
 
 import java.util.Random;
 
-/**
- * Created by einsteinsci on 8/21/2014.
- */
 public class TileEntityEnderSmelter extends TileEntity implements ISidedInventory
 {
 	public static final int smeltTime = 140;
@@ -28,9 +25,9 @@ public class TileEntityEnderSmelter extends TileEntity implements ISidedInventor
 	public static final int OUTPUT = 2;
 	public static final int GRAVEL = 3;
 	public static final Random random = new Random();
-	private static final int[] slotsTop = new int[] {0};
-	private static final int[] slotsBottom = new int[] {2, 1};
-	private static final int[] slotsSides = new int[] {1};
+	private static final int[] slotsTop = new int[] {INPUT};
+	private static final int[] slotsBottom = new int[] {OUTPUT};
+	private static final int[] slotsSides = new int[] {FUEL, GRAVEL, INPUT};
 	public int smelterBurnTime;
 	public int currentItemBurnLength;
 	public int smelterCookTime;
@@ -130,16 +127,16 @@ public class TileEntityEnderSmelter extends TileEntity implements ISidedInventor
 	@Override
 	public void updateEntity()
 	{
-		boolean flag = smelterBurnTime > 0;
-		boolean flag1 = false;
-
-		if (smelterBurnTime > 0)
-		{
-			--smelterBurnTime;
-		}
-
 		if (!worldObj.isRemote)
 		{
+			boolean flag = smelterBurnTime > 0;
+			boolean flag1 = false;
+
+			if (smelterBurnTime > 0)
+			{
+				--smelterBurnTime;
+			}
+
 			if (smelterBurnTime == 0 && canSmelt())
 			{
 				currentItemBurnLength = smelterBurnTime = getItemBurnTime(smelterStacks[FUEL]);
@@ -173,17 +170,17 @@ public class TileEntityEnderSmelter extends TileEntity implements ISidedInventor
 			{
 				smelterCookTime = 0;
 			}
-		}
 
-		if (flag != smelterBurnTime > 0)
-		{
-			flag1 = true;
-			BlockEnderSmelter.updateBlockState(smelterBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
-		}
+			if (flag != smelterBurnTime > 0)
+			{
+				flag1 = true;
+				BlockEnderSmelter.updateBlockState(smelterBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
+			}
 
-		if (flag1)
-		{
-			markDirty();
+			if (flag1)
+			{
+				markDirty();
+			}
 		}
 	}
 
@@ -428,7 +425,22 @@ public class TileEntityEnderSmelter extends TileEntity implements ISidedInventor
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack)
 	{
-		return slot == 2 ? false : slot == 1 ? isItemFuel(stack) : true;
+		if (stack == null || slot == OUTPUT)
+		{
+			return false;
+		}
+
+		if (slot == GRAVEL && stack.getItem() == Item.getItemFromBlock(Blocks.gravel))
+		{
+			return true;
+		}
+
+		if (slot == FUEL && getItemBurnTime(stack) > 0)
+		{
+			return true;
+		}
+
+		return slot == INPUT;
 	}
 
 	@Override

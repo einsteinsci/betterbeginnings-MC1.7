@@ -97,16 +97,16 @@ public class TileEntityBrickOven extends TileEntity implements ISidedInventory
 	@Override
 	public void updateEntity()
 	{
-		boolean flag = ovenBurnTime > 0;
-		boolean flag1 = false;
-
-		if (ovenBurnTime > 0)
-		{
-			--ovenBurnTime;
-		}
-
 		if (!worldObj.isRemote)
 		{
+			boolean flag = ovenBurnTime > 0;
+			boolean flag1 = false;
+
+			if (ovenBurnTime > 0)
+			{
+				--ovenBurnTime;
+			}
+
 			if (ovenBurnTime == 0 && canSmelt())
 			{
 				currentItemBurnLength = ovenBurnTime = getItemBurnTime(ovenStacks[FUEL]);
@@ -140,17 +140,17 @@ public class TileEntityBrickOven extends TileEntity implements ISidedInventory
 			{
 				ovenCookTime = 0;
 			}
-		}
 
-		if (flag != ovenBurnTime > 0)
-		{
-			flag1 = true;
-			BlockBrickOven.updateBlockState(ovenBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
-		}
+			if (flag != ovenBurnTime > 0)
+			{
+				flag1 = true;
+				BlockBrickOven.updateBlockState(ovenBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
+			}
 
-		if (flag1)
-		{
-			markDirty();
+			if (flag1)
+			{
+				markDirty();
+			}
 		}
 	}
 
@@ -495,12 +495,7 @@ public class TileEntityBrickOven extends TileEntity implements ISidedInventory
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side)
 	{
-		if (side == BlockUtil.Bottom)
-		{
-			return true;
-		}
-		return false;
-		// return side != 0 || slot != 1 || stack.getItem() == Items.bucket;
+		return side == BlockUtil.Bottom;
 	}
 
 	public ItemStack getStackInRowAndColumn(int row, int column)
@@ -508,6 +503,3 @@ public class TileEntityBrickOven extends TileEntity implements ISidedInventory
 		return getStackInSlot(INPUTSTART + row + column * 3);
 	}
 }
-
-
-// Buffer

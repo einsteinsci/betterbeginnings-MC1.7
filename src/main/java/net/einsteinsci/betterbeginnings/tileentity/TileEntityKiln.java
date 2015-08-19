@@ -22,19 +22,20 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityKiln extends TileEntity implements ISidedInventory
 {
+	public static final int SLOT_INPUT = 0;
+	public static final int SLOT_FUEL = 1;
+	public static final int SLOT_OUTPUT = 2;
+
 	public static final int smeltTime = 250;
-	private static final int[] slotsTop = new int[] {0};
-	private static final int[] slotsBottom = new int[] {2, 1};
-	private static final int[] slotsSides = new int[] {1};
+	private static final int[] slotsTop = new int[] {SLOT_INPUT};
+	private static final int[] slotsBottom = new int[] {SLOT_OUTPUT};
+	private static final int[] slotsSides = new int[] {SLOT_FUEL, SLOT_INPUT};
 	public ItemStack[] kilnStacks = new ItemStack[3];
 
 	public int kilnBurnTime;
 	public int currentBurnTime;
 
 	public int kilnCookTime;
-
-	// Where to look for the other kiln (1 = up, -1 = down, 0 = solo)
-	// public int stacked;
 
 	private String kilnName;
 
@@ -109,16 +110,16 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 	@Override
 	public void updateEntity()
 	{
-		boolean flag = kilnBurnTime > 0;
-		boolean flag1 = false;
-
-		if (kilnBurnTime > 0)
-		{
-			--kilnBurnTime;
-		}
-
 		if (!worldObj.isRemote)
 		{
+			boolean flag = kilnBurnTime > 0;
+			boolean flag1 = false;
+
+			if (kilnBurnTime > 0)
+			{
+				--kilnBurnTime;
+			}
+
 			if (kilnBurnTime == 0 && canSmelt())
 			{
 				currentBurnTime = kilnBurnTime = getItemBurnTime(kilnStacks[1]);
@@ -126,13 +127,14 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 				if (kilnBurnTime > 0)
 				{
 					flag1 = true;
-					if (kilnStacks[1] != null)
+					if (kilnStacks[SLOT_FUEL] != null)
 					{
-						--kilnStacks[1].stackSize;
+						--kilnStacks[SLOT_FUEL].stackSize;
 
-						if (kilnStacks[1].stackSize == 0)
+						if (kilnStacks[SLOT_FUEL].stackSize == 0)
 						{
-							kilnStacks[1] = kilnStacks[1].getItem().getContainerItem(kilnStacks[1]);
+							kilnStacks[SLOT_FUEL] = kilnStacks[SLOT_FUEL].getItem()
+								.getContainerItem(kilnStacks[SLOT_FUEL]);
 						}
 					}
 				}
@@ -152,45 +154,45 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 			{
 				kilnCookTime = 0;
 			}
-		}
 
-		if (flag != kilnBurnTime > 0)
-		{
-			flag1 = true;
-			BlockKiln.updateBlockState(kilnBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
-		}
+			if (flag != kilnBurnTime > 0)
+			{
+				flag1 = true;
+				BlockKiln.updateBlockState(kilnBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
+			}
 
-		if (flag1)
-		{
-			markDirty();
+			if (flag1)
+			{
+				markDirty();
+			}
 		}
 	}
 
 	private boolean canSmelt()
 	{
-		if (kilnStacks[0] == null)
+		if (kilnStacks[SLOT_INPUT] == null)
 		{
 			return false;
 		}
 		else
 		{
-			ItemStack stack = KilnRecipes.smelting().getSmeltingResult(kilnStacks[0]);
+			ItemStack stack = KilnRecipes.smelting().getSmeltingResult(kilnStacks[SLOT_INPUT]);
 			if (stack == null)
 			{
 				return false;
 			}
 
-			if (kilnStacks[2] == null)
+			if (kilnStacks[SLOT_OUTPUT] == null)
 			{
 				return true;
 			}
-			if (!kilnStacks[2].isItemEqual(stack))
+			if (!kilnStacks[SLOT_OUTPUT].isItemEqual(stack))
 			{
 				return false;
 			}
 
-			int result = kilnStacks[2].stackSize + stack.stackSize;
-			return result <= getInventoryStackLimit() && result <= kilnStacks[2].getMaxStackSize();
+			int result = kilnStacks[SLOT_OUTPUT].stackSize + stack.stackSize;
+			return result <= getInventoryStackLimit() && result <= kilnStacks[SLOT_OUTPUT].getMaxStackSize();
 		}
 	}
 
@@ -205,20 +207,20 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		{
 			ItemStack itemStack = KilnRecipes.smelting().getSmeltingResult(kilnStacks[0]);
 
-			if (kilnStacks[2] == null)
+			if (kilnStacks[SLOT_OUTPUT] == null)
 			{
-				kilnStacks[2] = itemStack.copy();
+				kilnStacks[SLOT_OUTPUT] = itemStack.copy();
 			}
-			else if (kilnStacks[2].getItem() == itemStack.getItem())
+			else if (kilnStacks[SLOT_OUTPUT].getItem() == itemStack.getItem())
 			{
-				kilnStacks[2].stackSize += itemStack.stackSize;
+				kilnStacks[SLOT_OUTPUT].stackSize += itemStack.stackSize;
 			}
 
-			--kilnStacks[0].stackSize;
+			--kilnStacks[SLOT_INPUT].stackSize;
 
-			if (kilnStacks[0].stackSize <= 0)
+			if (kilnStacks[SLOT_INPUT].stackSize <= 0)
 			{
-				kilnStacks[0] = null;
+				kilnStacks[SLOT_INPUT] = null;
 			}
 		}
 	}
@@ -424,7 +426,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack)
 	{
-		return slot == 2 ? false : slot == 1 ? isItemFuel(stack) : true;
+		return slot != SLOT_OUTPUT && (slot != SLOT_FUEL || isItemFuel(stack));
 	}
 
 	@SideOnly(Side.CLIENT)
