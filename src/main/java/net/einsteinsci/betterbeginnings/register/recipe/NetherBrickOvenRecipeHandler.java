@@ -3,9 +3,6 @@ package net.einsteinsci.betterbeginnings.register.recipe;
 import net.einsteinsci.betterbeginnings.tileentity.TileEntityNetherBrickOven;
 import net.minecraft.item.ItemStack;
 
-/**
- * Created by einsteinsci on 8/21/2014.
- */
 public class NetherBrickOvenRecipeHandler extends BrickOvenRecipeHandler
 {
 	private static final NetherBrickOvenRecipeHandler INSTANCE = new NetherBrickOvenRecipeHandler();
