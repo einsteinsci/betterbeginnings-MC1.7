@@ -230,6 +230,55 @@ public class BBEventHandler
 				}
 			}
 		}
+
+		// Tripwire -> thread
+		if (block == Blocks.tripwire)
+		{
+			int rem = 0;
+			for (int i = 0; i < e.drops.size(); i++)
+			{
+				if (e.drops.get(i).getItem() == Items.string)
+				{
+					rem = i;
+				}
+			}
+
+			int count = e.drops.get(rem).stackSize; // Almost certainly 1.
+			e.drops.remove(rem);
+			e.drops.add(new ItemStack(RegisterItems.thread, count));
+		}
+
+		// Makes sure emergency escape mechanic does not let blocks fall out (like logs)
+		ItemStack heldItemStack = player.getHeldItem();
+
+		int neededHarvestLevel = block.getHarvestLevel(e.blockMetadata);
+		String neededToolClass = block.getHarvestTool(e.blockMetadata);
+		int usedHarvestLevel = 0;
+		String usedToolClass = null;
+		if (heldItemStack != null)
+		{
+			for (String toolClass : heldItemStack.getItem().getToolClasses(heldItemStack))
+			{
+				int hl = heldItemStack.getItem().getHarvestLevel(heldItemStack, toolClass);
+				if (hl >= usedHarvestLevel)
+				{
+					usedHarvestLevel = hl;
+					usedToolClass = toolClass;
+				}
+			}
+		}
+
+		if (neededToolClass == null || neededToolClass.equalsIgnoreCase("shovel") ||
+			neededToolClass.equalsIgnoreCase("null"))
+		{
+			return;
+		}
+
+		if (usedToolClass == null || !usedToolClass.equalsIgnoreCase(neededToolClass) ||
+			usedHarvestLevel < neededHarvestLevel)
+		{
+			e.drops.clear();
+		}
 	}
 
 	@SubscribeEvent
