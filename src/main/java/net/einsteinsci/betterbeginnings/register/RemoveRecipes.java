@@ -128,7 +128,7 @@ public class RemoveRecipes
 		}
 
 		// Food that should be cooked in ovens
-		if (BBConfig.removeCraftedFoodRecipes)
+		if (BBConfig.removeCraftedFoodRecipes && BBConfig.moduleFurnaces)
 		{
 			removedRecipes.add(Items.bread);
 			removedRecipes.add(Items.cake);
