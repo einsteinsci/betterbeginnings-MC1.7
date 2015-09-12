@@ -132,7 +132,7 @@ public class BBConfig
 			"Remove recipes for wooden pickaxe, axe, shovel, and hoe.");
 		anyStringForTraps = config.getBoolean("Any string for traps", CRAFTING, false,
 			"Allow any string to be used for tripwire hooks, trapped chests, etc.");
-		allowStringAsToolBinding = config.getBoolean("Allow string and twine as tool binding", CRAFTING, false,
+		allowStringAsToolBinding = config.getBoolean("Allow string and twine as tool binding", CRAFTING, true,
 			"Allow string and twine to be used in place of leather strips in tool bindings, at a higher cost.");
 
 		// Smelting
