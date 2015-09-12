@@ -17,6 +17,7 @@ public class ItemHammer extends ItemTool
     protected ItemHammer(Item.ToolMaterial p_i45347_1_)
     {
         super(2.0F, p_i45347_1_, field_150915_c);
+	    setHarvestLevel("pickaxe", 1);
     }
 
 	public static Set GetBreakable()
