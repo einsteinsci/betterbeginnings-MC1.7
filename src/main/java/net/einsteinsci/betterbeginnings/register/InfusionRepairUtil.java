@@ -11,9 +11,6 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 
-/**
- * Created by einsteinsci on 8/20/2014.
- */
 public class InfusionRepairUtil
 {
 	public static boolean canRepair(InventoryInfusionRepair repairTable, EntityPlayer player)
