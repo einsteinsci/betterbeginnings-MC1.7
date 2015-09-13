@@ -9,6 +9,10 @@ Kind of complicated. See the [forum topic](http://www.minecraftforum.net/forums/
 -----------
 This repository is for the 1.7.10 branch of BetterBeginnings. It was moved to its own repository because GitHub in IntelliJ can be very finnicky. Source for the 1.8 version can be found [here](https://github.com/einsteinsci/betterbeginnings).
 
+Issues:
+-------
+Issues regarding this repository should be posted on the [1.8 repository](https://github.com/einsteinsci/betterbeginnings/issues), to keep them together. They will be marked with a "1.7.10" version tag if the issue is confirmed.
+
 Contributing to this project:
 -----------------------------
 1. Download Forge v10.13.3.1448
