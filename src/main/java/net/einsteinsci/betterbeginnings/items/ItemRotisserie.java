@@ -2,12 +2,12 @@ package net.einsteinsci.betterbeginnings.items;
 
 import net.einsteinsci.betterbeginnings.ModMain;
 
-public class ItemSpit extends ItemPan
+public class ItemRotisserie extends ItemPan
 {
-	public ItemSpit()
+	public ItemRotisserie()
 	{
 		super();
-		setUnlocalizedName("spit");
+		setUnlocalizedName("rotisserie");
 		setMaxDamage(4);
 		setMaxStackSize(1);
 		setTextureName(ModMain.MODID + ":" + getUnlocalizedName().substring(5));

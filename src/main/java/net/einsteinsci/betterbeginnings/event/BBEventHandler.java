@@ -60,7 +60,7 @@ public class BBEventHandler
 			e.toolTip.add("Not to be confused with charcoal");
 		}
 
-		if (item == RegisterItems.spit)
+		if (item == RegisterItems.rotisserie)
 		{
 			e.toolTip.add(ChatUtil.BLUE + "Not for roasting people");
 		}
@@ -110,6 +110,20 @@ public class BBEventHandler
 			!BBConfig.moduleInfusionRepair)
 		{
 			e.toolTip.add(ChatUtil.RED + "Module disabled in config.");
+		}
+
+		Block block = Block.getBlockFromItem(item);
+		if (block != null)
+		{
+			if (block == RegisterBlocks.kiln || block == RegisterBlocks.obsidianKiln ||
+				block == RegisterBlocks.brickOven || block == RegisterBlocks.netherBrickOven ||
+				block == RegisterBlocks.smelter || block == RegisterBlocks.enderSmelter)
+			{
+				if (!BBConfig.moduleFurnaces)
+				{
+					e.toolTip.add(ChatUtil.RED + "Module disabled in config.");
+				}
+			}
 		}
 
 		if (isWIP(e.itemStack))
