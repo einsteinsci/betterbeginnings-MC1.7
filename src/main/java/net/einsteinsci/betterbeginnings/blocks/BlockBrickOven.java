@@ -39,10 +39,12 @@ public class BlockBrickOven extends BlockContainer
 
 		if (lit)
 		{
+			this.setLightLevel(0.875F);
 			setBlockName("brickOvenLit");
 		}
 		else
 		{
+			this.setLightLevel(0.0F);
 			setBlockName("brickOven");
 			setCreativeTab(ModMain.tabBetterBeginnings);
 		}

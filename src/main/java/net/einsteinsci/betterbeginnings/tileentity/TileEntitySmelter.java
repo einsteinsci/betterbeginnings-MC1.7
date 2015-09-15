@@ -22,7 +22,7 @@ public class TileEntitySmelter extends TileEntity implements ISidedInventory
 	public static final int FUEL = 1;
 	public static final int OUTPUT = 2;
 	public static final int GRAVEL = 3;
-	private static final int[] slotsTop = new int[] {INPUT};
+	private static final int[] slotsTop = new int[] {GRAVEL, INPUT};
 	private static final int[] slotsBottom = new int[] {OUTPUT};
 	private static final int[] slotsSides = new int[] {FUEL, GRAVEL, INPUT};
 	public int smelterBurnTime;
@@ -390,15 +390,11 @@ public class TileEntitySmelter extends TileEntity implements ISidedInventory
 
 	@Override
 	public void openInventory()
-	{
-
-	}
+	{ }
 
 	@Override
 	public void closeInventory()
-	{
-
-	}
+	{ }
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack)

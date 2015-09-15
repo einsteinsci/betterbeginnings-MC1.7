@@ -23,9 +23,6 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-/**
- * Created by einsteinsci on 8/21/2014.
- */
 public class BlockNetherBrickOven extends BlockContainer
 {
 	private static boolean isLit;
