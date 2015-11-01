@@ -9,6 +9,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.EnumDifficulty;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.world.BlockEvent;
 import org.apache.logging.log4j.Level;
 
@@ -87,6 +88,11 @@ public class BlockBreakHelper
 	public static void handleBlockBreaking(BlockEvent.BreakEvent e)
 	{
 		if (!BBConfig.moduleBlockBreaking)
+		{
+			return;
+		}
+
+		if (e.getPlayer() instanceof FakePlayer)
 		{
 			return;
 		}
