@@ -1,6 +1,5 @@
 package net.einsteinsci.betterbeginnings.register;
 
-import net.einsteinsci.betterbeginnings.config.BBConfig;
 import net.einsteinsci.betterbeginnings.inventory.InventoryInfusionRepair;
 import net.einsteinsci.betterbeginnings.items.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +16,10 @@ public class InfusionRepairUtil
 {
 	public static boolean canRepair(InventoryInfusionRepair repairTable, EntityPlayer player)
 	{
-		return canRepairIgnoreXp(repairTable) && player.experienceLevel >= getNeededLevels(repairTable);
+		boolean playerReady = player.experienceLevel >= getNeededLevels(repairTable) ||
+			player.capabilities.isCreativeMode;
+
+		return canRepairIgnoreXp(repairTable) && playerReady;
 	}
 
 	public static boolean isDiffusionMode(InventoryInfusionRepair repair)
