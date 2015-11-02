@@ -1,16 +1,22 @@
 package net.einsteinsci.betterbeginnings.inventory;
 
+import net.einsteinsci.betterbeginnings.items.ItemBBCloth;
 import net.einsteinsci.betterbeginnings.register.InfusionRepairUtil;
 import net.einsteinsci.betterbeginnings.register.RegisterBlocks;
+import net.einsteinsci.betterbeginnings.util.NBTUtil;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
-/**
- * Created by einsteinsci on 8/20/2014.
- */
+import java.util.Random;
+
 public class ContainerInfusionRepair extends Container
 {
 	public Slot[] circleSlots = new Slot[9];
@@ -74,6 +80,24 @@ public class ContainerInfusionRepair extends Container
 			output.setInventorySlotContents(0, result);
 			resultSlot.setBackgroundIcon(result.getItem().getIconFromDamage(0));
 		}
+		else if (InfusionRepairUtil.isDiffusionMode(inputs) && InfusionRepairUtil.getDiffusionTool(inputs) != null)
+		{
+			ItemStack tool = InfusionRepairUtil.getDiffusionTool(inputs);
+			if (InfusionRepairUtil.isDiffusionReady(inputs))
+			{
+				ItemStack result = new ItemStack(Items.enchanted_book);
+				NBTTagList enchList = tool.getEnchantmentTagList(); // no, because isDiffusionReady() ensures it's not null.
+				Random rand = new Random();
+				int enchSpot = rand.nextInt(enchList.tagCount());
+				NBTTagCompound enchTag = enchList.getCompoundTagAt(enchSpot);
+				short enchID = enchTag.getShort("id");
+				short enchLvl = enchTag.getShort("lvl");
+
+				NBTUtil.addBookEnchantment(result, enchID, enchLvl);
+				output.setInventorySlotContents(0, result);
+				resultSlot.setBackgroundIcon(result.getItem().getIconFromDamage(0));
+			}
+		}
 		else
 		{
 			output.setInventorySlotContents(0, null);
@@ -101,19 +125,16 @@ public class ContainerInfusionRepair extends Container
 			}
 			else if (slotId >= 10 && slotId <= 45)
 			{
-				if (itemstack != null)
+				if (itemstack.getItem().isDamageable() || itemstack.getItem() instanceof ItemBBCloth)
 				{
-					if (itemstack.getItem().isDamageable())
-					{
-						if (!mergeItemStack(itemstack1, 0, 1, false))
-						{
-							return null;
-						}
-					}
-					else if (!mergeItemStack(itemstack1, 1, 9, false))
+					if (!mergeItemStack(itemstack1, 0, 1, false))
 					{
 						return null;
 					}
+				}
+				else if (!mergeItemStack(itemstack1, 1, 9, false))
+				{
+					return null;
 				}
 			}
 			else if (!mergeItemStack(itemstack1, 10, 46, false))

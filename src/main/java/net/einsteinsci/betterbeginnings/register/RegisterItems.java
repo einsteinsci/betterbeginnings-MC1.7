@@ -3,7 +3,7 @@ package net.einsteinsci.betterbeginnings.register;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.einsteinsci.betterbeginnings.config.BBConfig;
 import net.einsteinsci.betterbeginnings.items.*;
-import net.einsteinsci.betterbeginnings.items.ItemCloth;
+import net.einsteinsci.betterbeginnings.items.ItemBBCloth;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.item.Item.ToolMaterial;
@@ -26,7 +26,7 @@ public class RegisterItems
 	public static final Item testItem = new ItemTestItem();
 	public static final Item silk = new ItemSilk();
 	public static final Item thread = new ItemThread();
-	public static final Item cloth = new ItemCloth();
+	public static final Item cloth = new ItemBBCloth();
 	public static final Item leatherStrip = new ItemLeatherStrip();
 	public static final Item ironNugget = new ItemIronNugget();
 	public static final Item charredMeat = new ItemCharredMeat();

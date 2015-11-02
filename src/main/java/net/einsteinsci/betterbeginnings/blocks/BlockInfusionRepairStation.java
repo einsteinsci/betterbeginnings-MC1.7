@@ -11,9 +11,6 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-/**
- * Created by einsteinsci on 8/20/2014.
- */
 public class BlockInfusionRepairStation extends Block
 {
 	private final Random random = new Random();

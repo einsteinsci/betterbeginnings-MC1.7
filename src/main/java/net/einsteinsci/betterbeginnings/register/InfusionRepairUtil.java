@@ -1,6 +1,8 @@
 package net.einsteinsci.betterbeginnings.register;
 
+import net.einsteinsci.betterbeginnings.config.BBConfig;
 import net.einsteinsci.betterbeginnings.inventory.InventoryInfusionRepair;
+import net.einsteinsci.betterbeginnings.items.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -16,6 +18,71 @@ public class InfusionRepairUtil
 	public static boolean canRepair(InventoryInfusionRepair repairTable, EntityPlayer player)
 	{
 		return canRepairIgnoreXp(repairTable) && player.experienceLevel >= getNeededLevels(repairTable);
+	}
+
+	public static boolean isDiffusionMode(InventoryInfusionRepair repair)
+	{
+		if (repair.getStackInSlot(0) == null)
+		{
+			return false;
+		}
+
+		return repair.getStackInSlot(0).getItem() instanceof ItemBBCloth;
+	}
+
+	public static ItemStack getDiffusionTool(InventoryInfusionRepair repair)
+	{
+		for (int i = 1; i < repair.getSizeInventory(); i++)
+		{
+			ItemStack stack = repair.getStackInSlot(i);
+			if (stack == null)
+			{
+				continue;
+			}
+
+			if (stack.getItem() instanceof ItemTool ||
+				stack.getItem() instanceof ItemSword ||
+				stack.getItem() instanceof ItemArmor)
+			{
+				return stack;
+			}
+		}
+
+		return null;
+	}
+
+	public static boolean isDiffusionReady(InventoryInfusionRepair repair)
+	{
+		if (!isDiffusionMode(repair))
+		{
+			return false;
+		}
+
+		ItemStack tool = getDiffusionTool(repair);
+		if (tool == null)
+		{
+			return false;
+		}
+
+		// Requiring a book (old method)
+		//for (int i = 1; i < repair.getSizeInventory(); i++)
+		//{
+		//	ItemStack stack = repair.getStackInSlot(i);
+		//	if (stack == null)
+		//	{
+		//		continue;
+		//	}
+		//
+		//	if (stack.getItem() instanceof ItemBook)
+		//	{
+		//		return true;
+		//	}
+		//}
+		//
+		//return false;
+
+		ItemStack clothStack = repair.getStackInSlot(0);
+		return clothStack.stackSize == BBConfig.diffusionClothCount;
 	}
 
 	public static boolean canRepairIgnoreXp(InventoryInfusionRepair repairTable)
