@@ -14,6 +14,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemFlintAndSteel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -143,7 +144,7 @@ public class BlockCampfire extends BlockContainer
 		{
 			Item item = player.getHeldItem().getItem();
 
-			if (item == Items.flint_and_steel || item == RegisterItems.fireBow)
+			if (item instanceof ItemFlintAndSteel || item == RegisterItems.fireBow)
 			{
 				return false;
 			}

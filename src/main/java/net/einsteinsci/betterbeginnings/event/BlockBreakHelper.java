@@ -226,7 +226,7 @@ public class BlockBreakHelper
 			case 3:
 				return "diamond";
 			default:
-				return "level " + level;
+				return "[LEVEL " + level + "]";
 		}
 	}
 }

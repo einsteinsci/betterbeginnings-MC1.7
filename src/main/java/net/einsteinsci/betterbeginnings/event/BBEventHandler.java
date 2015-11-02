@@ -174,7 +174,7 @@ public class BBEventHandler
 						TileEntityCampfire campfire = (TileEntityCampfire)e.world.getTileEntity(e.x, e.y, e.z);
 
 						campfire.lightFuel(); // Light it.
-						e.entityPlayer.getHeldItem().damageItem(1, e.entityPlayer);
+						//e.entityPlayer.getHeldItem().damageItem(1, e.entityPlayer);
 					}
 				}
 			}
