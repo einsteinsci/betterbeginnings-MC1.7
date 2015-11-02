@@ -12,7 +12,6 @@ public class BBConfig
 	public static final String MOBDROPS = "mobdrops";
 	public static final String WORLDGEN = "worldgen";
 	public static final String TWEAKS = "tweaks";
-	public static final String INFUSION = "infusionRepair";
 
 	public static boolean greetUser;
 	public static boolean debugLogging;
@@ -43,8 +42,6 @@ public class BBConfig
 
 	public static boolean makeStuffStackable;
 	public static boolean noDamageOnBadBreak;
-
-	public static int diffusionClothCount;
 
 	public static List<String> alwaysBreakable;
 
@@ -79,8 +76,6 @@ public class BBConfig
 
 		makeStuffStackable = true;
 		noDamageOnBadBreak = false;
-
-		diffusionClothCount = 4;
 
 		alwaysBreakable = new ArrayList<>();
 	}
@@ -150,13 +145,6 @@ public class BBConfig
 				" 'Disable vanilla smelting'.");
 		canCampfireDoAllKilnStuff = config.getBoolean("Allow campfire to use all kiln recipes", SMELTING, false,
 			"Allow campfire to process all recipes kiln can, instead of just a few.");
-
-		//////////
-		// ints //
-		//////////
-
-		diffusionClothCount = config.getInt("Amount of cloth needed for diffusion", INFUSION, 4, 1, 64,
-			"Amount of cloth needed (and consumed) during the diffusion process.");
 
 		////////////
 		// Arrays //

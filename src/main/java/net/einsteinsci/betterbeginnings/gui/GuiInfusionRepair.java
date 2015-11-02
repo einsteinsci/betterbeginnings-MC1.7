@@ -3,6 +3,7 @@ package net.einsteinsci.betterbeginnings.gui;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.einsteinsci.betterbeginnings.ModMain;
+import net.einsteinsci.betterbeginnings.config.BBConfig;
 import net.einsteinsci.betterbeginnings.inventory.ContainerInfusionRepair;
 import net.einsteinsci.betterbeginnings.register.InfusionRepairUtil;
 import net.einsteinsci.betterbeginnings.renderer.RenderItemPartialTransparency;
@@ -46,36 +47,57 @@ public class GuiInfusionRepair extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
 		int takenLevels = InfusionRepairUtil.getTakenLevels(container.inputs);
-		String takenLevelsStr = "";
+		String takenLevelsStr = "" + takenLevels;
 
 		int neededLevels = InfusionRepairUtil.getNeededLevels(container.inputs);
-		String neededLevelsStr = "";
+		String neededLevelsStr = "" + neededLevels;
 
-		ItemStack repaired = container.inputs.getStackInSlot(0);
-		if (repaired != null)
+		if (InfusionRepairUtil.isDiffusionMode(container.inputs))
 		{
-			if (repaired.isItemStackDamageable() &&
-					(player.experienceLevel >= InfusionRepairUtil.getNeededLevels(container.inputs)
-							|| player.capabilities.isCreativeMode))
+			if (InfusionRepairUtil.getDiffusionTool(container.inputs) == null)
 			{
-				takenLevelsStr = "Taken: " + takenLevels + " L";
-				neededLevelsStr = "Needed: " + neededLevels + " L";
+				neededLevelsStr = "Needed: Tool";
+				takenLevelsStr = "Taken: ";
 			}
-			else if (repaired.isItemStackDamageable())
+			else if (!InfusionRepairUtil.isDiffusionReady(container.inputs))
 			{
-				takenLevelsStr = ChatUtil.RED + "Taken: " + takenLevels + " L";
-				neededLevelsStr = ChatUtil.RED + "Needed: " + neededLevels + " L";
+				neededLevelsStr = "Needed: Book";
+				takenLevelsStr = "Taken: ";
+			}
+			else
+			{
+				neededLevelsStr = "Needed: ";
+				takenLevelsStr = "Taken: ";
+			}
+		}
+		else
+		{
+			ItemStack repaired = container.inputs.getStackInSlot(0);
+			if (repaired != null)
+			{
+				if (repaired.isItemStackDamageable() &&
+					(player.experienceLevel >= InfusionRepairUtil.getNeededLevels(container.inputs)
+						|| player.capabilities.isCreativeMode))
+				{
+					takenLevelsStr = "Taken: " + takenLevelsStr + " L";
+					neededLevelsStr = "Needed: " + neededLevelsStr + " L";
+				}
+				else if (repaired.isItemStackDamageable())
+				{
+					takenLevelsStr = ChatUtil.RED + "Taken: " + takenLevelsStr + " L";
+					neededLevelsStr = ChatUtil.RED + "Needed: " + neededLevelsStr + " L";
+				}
+				else
+				{
+					takenLevelsStr = "Taken: ";
+					neededLevelsStr = "Needed: ";
+				}
 			}
 			else
 			{
 				takenLevelsStr = "Taken: ";
 				neededLevelsStr = "Needed: ";
 			}
-		}
-		else
-		{
-			takenLevelsStr = "Taken: ";
-			neededLevelsStr = "Needed: ";
 		}
 
 		fontRendererObj.drawString(neededLevelsStr, 90, 5, 4210752);

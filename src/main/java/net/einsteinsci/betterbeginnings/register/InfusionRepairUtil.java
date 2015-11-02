@@ -44,7 +44,10 @@ public class InfusionRepairUtil
 				stack.getItem() instanceof ItemSword ||
 				stack.getItem() instanceof ItemArmor)
 			{
-				return stack;
+				if (stack.getEnchantmentTagList() != null)
+				{
+					return stack;
+				}
 			}
 		}
 
@@ -64,25 +67,21 @@ public class InfusionRepairUtil
 			return false;
 		}
 
-		// Requiring a book (old method)
-		//for (int i = 1; i < repair.getSizeInventory(); i++)
-		//{
-		//	ItemStack stack = repair.getStackInSlot(i);
-		//	if (stack == null)
-		//	{
-		//		continue;
-		//	}
-		//
-		//	if (stack.getItem() instanceof ItemBook)
-		//	{
-		//		return true;
-		//	}
-		//}
-		//
-		//return false;
+		for (int i = 1; i < repair.getSizeInventory(); i++)
+		{
+			ItemStack stack = repair.getStackInSlot(i);
+			if (stack == null)
+			{
+				continue;
+			}
 
-		ItemStack clothStack = repair.getStackInSlot(0);
-		return clothStack.stackSize == BBConfig.diffusionClothCount;
+			if (stack.getItem() instanceof ItemBook)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public static boolean canRepairIgnoreXp(InventoryInfusionRepair repairTable)

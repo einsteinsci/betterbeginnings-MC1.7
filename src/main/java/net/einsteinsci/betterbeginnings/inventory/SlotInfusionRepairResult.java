@@ -7,16 +7,14 @@ import net.einsteinsci.betterbeginnings.register.achievement.RegisterAchievement
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.SlotCrafting;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 
-/**
- * Created by einsteinsci on 8/20/2014.
- */
 public class SlotInfusionRepairResult extends SlotCrafting
 {
 	IInventory inputSlots;
@@ -28,79 +26,129 @@ public class SlotInfusionRepairResult extends SlotCrafting
 		inputSlots = inputs;
 	}
 
-	public void onPickupFromSlot(EntityPlayer entityPlayer, ItemStack stack)
+	public void onPickupFromSlot(EntityPlayer entityPlayer, ItemStack resultStack)
 	{
-		onCrafting(stack);
+		onCrafting(resultStack);
 
 		InventoryInfusionRepair inputs = (InventoryInfusionRepair)inputSlots;
 
-		ArrayList<ItemStack> required = InfusionRepairUtil.getRequiredStacks(inputs);
-
-		for (ItemStack requiredStack : required)
+		if (InfusionRepairUtil.isDiffusionMode(inputs))
 		{
-			for (int i = 0; i < inputSlots.getSizeInventory(); ++i)
+			inputs.getStackInSlot(0).stackSize--;
+			if (inputs.getStackInSlot(0).stackSize <= 0)
 			{
-				if (requiredStack != null && inputSlots.getStackInSlot(i) != null)
+				inputs.stackList[0] = null;
+			}
+
+			for (int i = 1; i < inputs.getSizeInventory(); i++)
+			{
+				ItemStack stack = inputs.getStackInSlot(i);
+				if (stack == null)
 				{
-					if (requiredStack.getItem() == inputSlots.getStackInSlot(i).getItem() &&
-							(requiredStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ||
-									requiredStack.getItemDamage() == inputSlots.getStackInSlot(i).getItemDamage()))
+					continue;
+				}
+
+				if (stack.getItem() instanceof ItemBook)
+				{
+					stack.stackSize--;
+					if (stack.stackSize <= 0)
 					{
-						inputSlots.decrStackSize(i, requiredStack.stackSize);
+						inputs.stackList[i] = null;
+					}
+				}
 
-						ItemStack itemstack1 = inputSlots.getStackInSlot(i);
+				if (stack.getItem() instanceof ItemTool ||
+					stack.getItem() instanceof ItemSword ||
+					stack.getItem() instanceof ItemArmor)
+				{
+					NBTTagList enchList = stack.getEnchantmentTagList();
+					if (enchList == null)
+					{
+						continue;
+					}
 
-						if (itemstack1 != null)
+					enchList.removeTag(0); // kill the first enchantment.
+					if (enchList.tagCount() == 0)
+					{
+						stack.getTagCompound().removeTag("ench");
+					}
+
+					int dmgAmount = stack.getMaxDamage() / 5;
+					int damagedMeta = stack.getItemDamage() + dmgAmount;
+					damagedMeta = Math.min(damagedMeta, stack.getMaxDamage() - 1);
+					stack.setItemDamage(damagedMeta);
+				}
+			}
+
+			setBackgroundIcon(null);
+		}
+		else
+		{
+			ArrayList<ItemStack> required = InfusionRepairUtil.getRequiredStacks(inputs);
+
+			for (ItemStack requiredStack : required)
+			{
+				for (int i = 0; i < inputSlots.getSizeInventory(); ++i)
+				{
+					if (requiredStack != null && inputSlots.getStackInSlot(i) != null)
+					{
+						if (requiredStack.getItem() == inputSlots.getStackInSlot(i).getItem() &&
+							(requiredStack.getItemDamage() == OreDictionary.WILDCARD_VALUE ||
+								requiredStack.getItemDamage() == inputSlots.getStackInSlot(i).getItemDamage()))
 						{
-							if (itemstack1.getItem().hasContainerItem(itemstack1))
+							inputSlots.decrStackSize(i, requiredStack.stackSize);
+
+							ItemStack itemstack1 = inputSlots.getStackInSlot(i);
+
+							if (itemstack1 != null)
 							{
-								ItemStack containerStack = itemstack1.getItem().getContainerItem(itemstack1);
-
-								if (containerStack != null && containerStack.isItemStackDamageable() && containerStack
-										.getItemDamage() > containerStack.getMaxDamage())
+								if (itemstack1.getItem().hasContainerItem(itemstack1))
 								{
-									MinecraftForge.EVENT_BUS
-											.post(new PlayerDestroyItemEvent(entityPlayer, containerStack));
-									continue;
-								}
+									ItemStack containerStack = itemstack1.getItem().getContainerItem(itemstack1);
 
-								if (!itemstack1.getItem()
-										.doesContainerItemLeaveCraftingGrid(itemstack1) || !entityPlayer.inventory
-										.addItemStackToInventory(containerStack))
-								{
-									if (inputSlots.getStackInSlot(i) == null)
+									if (containerStack != null && containerStack.isItemStackDamageable() &&
+										containerStack
+											.getItemDamage() > containerStack.getMaxDamage())
 									{
-										inputSlots.setInventorySlotContents(i, containerStack);
+										MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(entityPlayer,
+											containerStack));
+										continue;
 									}
-									else
+
+									if (!itemstack1.getItem().doesContainerItemLeaveCraftingGrid(itemstack1) ||
+										!entityPlayer.inventory.addItemStackToInventory(containerStack))
 									{
-										entityPlayer.dropPlayerItemWithRandomChoice(containerStack, false);
+										if (inputSlots.getStackInSlot(i) == null)
+										{
+											inputSlots.setInventorySlotContents(i, containerStack);
+										}
+										else
+										{
+											entityPlayer.dropPlayerItemWithRandomChoice(containerStack, false);
+										}
 									}
 								}
 							}
-						}
 
-						break;
+							break;
+						}
 					}
 				}
 			}
-		}
 
-		if (!entityPlayer.capabilities.isCreativeMode)
-		{
-			entityPlayer.addExperienceLevel(-InfusionRepairUtil.getTakenLevels(inputs));
-		}
+			if (!entityPlayer.capabilities.isCreativeMode)
+			{
+				entityPlayer.addExperienceLevel(-InfusionRepairUtil.getTakenLevels(inputs));
+			}
 
-		inputSlots.setInventorySlotContents(0, null);
+			inputSlots.setInventorySlotContents(0, null);
 
-		if (stack != null)
-		{
-			if (stack.getItem() == RegisterItems.noobWoodSword)
+			if (resultStack.getItem() == RegisterItems.noobWoodSword)
 			{
 				RegisterAchievements.achievementGet(entityPlayer, "repairNoobSword");
 			}
 
-			FMLCommonHandler.instance().firePlayerCraftingEvent(entityPlayer, stack, inputSlots);
+			FMLCommonHandler.instance().firePlayerCraftingEvent(entityPlayer, resultStack, inputSlots);
 		}
 	}
 }

@@ -87,9 +87,7 @@ public class ContainerInfusionRepair extends Container
 			{
 				ItemStack result = new ItemStack(Items.enchanted_book);
 				NBTTagList enchList = tool.getEnchantmentTagList(); // no, because isDiffusionReady() ensures it's not null.
-				Random rand = new Random();
-				int enchSpot = rand.nextInt(enchList.tagCount());
-				NBTTagCompound enchTag = enchList.getCompoundTagAt(enchSpot);
+				NBTTagCompound enchTag = enchList.getCompoundTagAt(0);
 				short enchID = enchTag.getShort("id");
 				short enchLvl = enchTag.getShort("lvl");
 
@@ -127,7 +125,7 @@ public class ContainerInfusionRepair extends Container
 			{
 				if (itemstack.getItem().isDamageable() || itemstack.getItem() instanceof ItemBBCloth)
 				{
-					if (!mergeItemStack(itemstack1, 0, 1, false))
+					if (!mergeItemStack(itemstack1, 0, 9, false))
 					{
 						return null;
 					}
