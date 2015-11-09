@@ -1,6 +1,12 @@
 package net.einsteinsci.betterbeginnings.config;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.einsteinsci.betterbeginnings.ModMain;
+import net.einsteinsci.betterbeginnings.util.RegistryUtil;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
+import org.apache.logging.log4j.Level;
 
 import java.util.*;
 
@@ -43,7 +49,13 @@ public class BBConfig
 	public static boolean makeStuffStackable;
 	public static boolean noDamageOnBadBreak;
 
-	public static List<String> alwaysBreakable;
+	public static List<String> alwaysBreakableNames;
+	public static List<String> alsoPickaxesStrings;
+	public static List<String> alsoAxesStrings;
+
+	public static List<Block> alwaysBreakable;
+	public static Map<Item, Integer> alsoPickaxes;
+	public static Map<Item, Integer> alsoAxes;
 
 	public static void initialize()
 	{
@@ -77,14 +89,14 @@ public class BBConfig
 		makeStuffStackable = true;
 		noDamageOnBadBreak = false;
 
-		alwaysBreakable = new ArrayList<>();
+		alwaysBreakableNames = new ArrayList<>();
+		alsoPickaxesStrings = new ArrayList<>();
+		alsoAxesStrings = new ArrayList<>();
 	}
 
 	public static void syncConfig(Configuration config)
 	{
-		//////////////
-		// Booleans //
-		//////////////
+		// region BOOLEANS
 
 		// General
 		greetUser = config.getBoolean("Greet user", GENERAL, true, "Greet user upon login");
@@ -145,20 +157,109 @@ public class BBConfig
 				" 'Disable vanilla smelting'.");
 		canCampfireDoAllKilnStuff = config.getBoolean("Allow campfire to use all kiln recipes", SMELTING, false,
 			"Allow campfire to process all recipes kiln can, instead of just a few.");
+		// endregion BOOLEANS
 
-		////////////
-		// Arrays //
-		////////////
+		// region ALWAYS BREAKABLE
+		String[] _alwaysBreakable = config.getStringList("Always breakable", TWEAKS, new String[] {},
+			"List of blocks to always be breakable. Use this format: 'modid:blockName'.");
+		alwaysBreakableNames.clear();
+		Collections.addAll(alwaysBreakableNames, _alwaysBreakable);
+		alwaysBreakable = new ArrayList<>();
+		for (String name : alwaysBreakableNames)
+		{
+			Block b = RegistryUtil.getBlockFromRegistry(name);
+			if (b == null)
+			{
+				ModMain.log(Level.WARN, "No block found matching '" + name + "'.");
+			}
+			else
+			{
+				alwaysBreakable.add(b);
+			}
+		}
+		// endregion ALWAYS BREAKABLE
 
-		String[] _alwaysBreakable = config.getStringList("Always breakable", GENERAL, new String[] {},
-			"List of blocks to always be breakable. Use this format: " +
-				"'modid:blockName'.");
-		alwaysBreakable.clear();
-		Collections.addAll(alwaysBreakable, _alwaysBreakable);
+		// region ALSO PICKAXES
+		String[] _alsoPickaxes = config.getStringList("Also pickaxes", TWEAKS, new String[] {},
+			"List of tools that should be treated as pickaxes. Use this format: 'modid:itemName=toolTier'");
+		alsoPickaxesStrings.clear();
+		Collections.addAll(alsoPickaxesStrings, _alsoPickaxes);
+		alsoPickaxes = new HashMap<>();
+		for (String entry : alsoPickaxesStrings)
+		{
+			int colonAt = entry.indexOf(":");
+			int equalsAt = entry.indexOf("=");
+			if (colonAt == -1 || equalsAt == -1)
+			{
+				ModMain.log(Level.ERROR, "Invalid format: '" + entry + "'.");
+				continue;
+			}
 
-		//////////
-		// Save //
-		//////////
+			String modid = entry.substring(0, colonAt);
+			String simpleName = entry.substring(colonAt + 1, equalsAt);
+
+			Item item = GameRegistry.findItem(modid, simpleName);
+
+			if (item == null)
+			{
+				ModMain.log(Level.ERROR, "No item found within '" + entry + "'.");
+				continue;
+			}
+
+			String levelStr = entry.substring(equalsAt + 1);
+			try
+			{
+				int level = Integer.parseInt(levelStr);
+
+				alsoPickaxes.put(item, level);
+			}
+			catch (NumberFormatException e)
+			{
+				ModMain.log(Level.ERROR, "Invalid number: " + levelStr + " within " + entry);
+			}
+		}
+		// endregion ALSO PICKAXES
+
+		// region ALSO AXES
+		String[] _alsoAxes = config.getStringList("Also axes", TWEAKS, new String[] {},
+			"List of tools that should be treated as axes. Use this format: 'modid:itemName=toolTier'");
+		alsoAxesStrings.clear();
+		Collections.addAll(alsoAxesStrings, _alsoAxes);
+		alsoAxes = new HashMap<>();
+		for (String entry : alsoAxesStrings)
+		{
+			int colonAt = entry.indexOf(":");
+			int equalsAt = entry.indexOf("=");
+			if (colonAt == -1 || equalsAt == -1)
+			{
+				ModMain.log(Level.WARN, "Invalid format: '" + entry + "'.");
+				continue;
+			}
+
+			String modid = entry.substring(0, colonAt);
+			String simpleName = entry.substring(colonAt + 1, equalsAt);
+
+			Item item = GameRegistry.findItem(modid, simpleName);
+
+			if (item == null)
+			{
+				ModMain.log(Level.WARN, "No item found within '" + entry + "'.");
+				continue;
+			}
+
+			String levelStr = entry.substring(equalsAt + 1);
+			try
+			{
+				int level = Integer.parseInt(levelStr);
+
+				alsoAxes.put(item, level);
+			}
+			catch (NumberFormatException e)
+			{
+				ModMain.log(Level.ERROR, "Invalid number: " + levelStr + " within " + entry);
+			}
+		}
+		// endregion ALSO AXES
 
 		if (config.hasChanged())
 		{

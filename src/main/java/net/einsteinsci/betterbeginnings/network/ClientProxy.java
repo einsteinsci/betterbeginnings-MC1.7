@@ -39,7 +39,7 @@ public class ClientProxy extends ServerProxy
 				return ctx.getServerHandler().playerEntity;
 			}
 			default:
-				ModMain.Log(Level.ERROR, "Invalid side in TestMsgHandler: " + ctx.side);
+				ModMain.log(Level.ERROR, "Invalid side in TestMsgHandler: " + ctx.side);
 		}
 		return null;
 	}

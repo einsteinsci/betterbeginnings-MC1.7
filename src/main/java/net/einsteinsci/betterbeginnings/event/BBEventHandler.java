@@ -22,6 +22,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.world.EnumDifficulty;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -189,7 +190,7 @@ public class BBEventHandler
 
 		// All onBlockDrops activity that does not have to do with players must
 		// occur before here.
-		if (player == null)
+		if (player == null || player instanceof FakePlayer)
 		{
 			return;
 		}
@@ -258,23 +259,40 @@ public class BBEventHandler
 			e.drops.add(new ItemStack(RegisterItems.thread, count));
 		}
 
-		// Makes sure emergency escape mechanic does not let blocks fall out (like logs)
-		ItemStack heldItemStack = player.getHeldItem();
+		if (BBConfig.alwaysBreakable.contains(block))
+		{
+			ModMain.logDebug("Skipped block-breaking for block '" + block.getUnlocalizedName() +
+				"'. Block is marked as always breakable in config.");
+			return;
+		}
 
+		// Makes sure emergency escape mechanic does not let blocks fall out (like logs)
 		int neededHarvestLevel = block.getHarvestLevel(e.blockMetadata);
 		String neededToolClass = block.getHarvestTool(e.blockMetadata);
 		int usedHarvestLevel = 0;
 		String usedToolClass = null;
-		if (heldItemStack != null)
+		if (held != null)
 		{
-			for (String toolClass : heldItemStack.getItem().getToolClasses(heldItemStack))
+			for (String toolClass : held.getItem().getToolClasses(held))
 			{
-				int hl = heldItemStack.getItem().getHarvestLevel(heldItemStack, toolClass);
+				int hl = held.getItem().getHarvestLevel(held, toolClass);
 				if (hl >= usedHarvestLevel)
 				{
 					usedHarvestLevel = hl;
 					usedToolClass = toolClass;
 				}
+			}
+
+			if (BBConfig.alsoPickaxes.containsKey(held.getItem()))
+			{
+				usedToolClass = "pickaxe";
+				usedHarvestLevel = BBConfig.alsoPickaxes.get(held.getItem());
+			}
+
+			if (BBConfig.alsoAxes.containsKey(held.getItem()))
+			{
+				usedToolClass = "axe";
+				usedHarvestLevel = BBConfig.alsoAxes.get(held.getItem());
 			}
 		}
 

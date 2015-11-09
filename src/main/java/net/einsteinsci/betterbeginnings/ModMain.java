@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Level;
 public class ModMain
 {
 	public static final String MODID = "betterbeginnings";
-	public static final String VERSION = "0.9.5-R1b";
+	public static final String VERSION = "0.9.5-R2b";
 	public static final String NAME = "Better Beginnings";
 	public static final CreativeTabs tabBetterBeginnings = new CreativeTabs("tabBetterBeginnings")
 	{
@@ -49,31 +49,31 @@ public class ModMain
 	public static ServerProxy proxy;
 	public BBEventHandler eventHandler = new BBEventHandler();
 
-	public static void LogDebug(String text)
+	public static void logDebug(String text)
 	{
 		if (BBConfig.debugLogging)
 		{
-			Log(Level.DEBUG, text);
+			log(Level.DEBUG, text);
 		}
 	}
 
-	public static void Log(Level level, String text)
+	public static void log(Level level, String text)
 	{
 		FMLLog.log(NAME, level, text);
 	}
 
-	public static void LogDebug(Level level, String text)
+	public static void logDebug(Level level, String text)
 	{
 		if (BBConfig.debugLogging)
 		{
-			Log(level, text);
+			log(level, text);
 		}
 	}
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		Log("Starting pre-initialization...");
+		log("Starting pre-initialization...");
 
 		configFile = new Configuration(e.getSuggestedConfigurationFile());
 		configFile.load();
@@ -98,9 +98,9 @@ public class ModMain
 		RegisterTileEntities.register();
 	}
 
-	public static void Log(String text)
+	public static void log(String text)
 	{
-		Log(Level.INFO, text);
+		log(Level.INFO, text);
 	}
 
 	@EventHandler
@@ -125,6 +125,6 @@ public class ModMain
 		RegisterItems.tweakVanilla();
 		Worldgen.addWorldgen();
 		AchievementPage.registerAchievementPage(new AchievementPage(NAME, RegisterAchievements.getAchievements()));
-		Log("Finished post-initialization.");
+		log("Finished post-initialization.");
 	}
 }
