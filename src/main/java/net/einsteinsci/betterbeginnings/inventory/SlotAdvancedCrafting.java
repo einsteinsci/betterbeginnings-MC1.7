@@ -1,6 +1,7 @@
 package net.einsteinsci.betterbeginnings.inventory;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.einsteinsci.betterbeginnings.items.ItemKnife;
 import net.einsteinsci.betterbeginnings.register.recipe.AdvancedCraftingHandler;
 import net.einsteinsci.betterbeginnings.register.recipe.AdvancedRecipe;
 import net.minecraft.entity.player.EntityPlayer;
@@ -102,7 +103,7 @@ public class SlotAdvancedCrafting extends Slot
 		}
 
 		if (stack.getItem() instanceof ItemSword
-				&& ((ItemSword)stack.getItem()).getToolMaterialName() != "noobwood")
+				&& ((ItemSword)stack.getItem()).getToolMaterialName().equals("noobwood"))
 		{
 			thePlayer.addStat(AchievementList.buildSword, 1);
 		}
@@ -132,17 +133,29 @@ public class SlotAdvancedCrafting extends Slot
 
 			if (ingredientStack != null)
 			{
-				craftMatrix.decrStackSize(i, 1);
+				if (ingredientStack.getItem() instanceof ItemKnife)
+				{
+					ingredientStack.damageItem(1, player);
+				}
+				else
+				{
+					craftMatrix.decrStackSize(i, 1);
+				}
 
 				if (ingredientStack.getItem().hasContainerItem(ingredientStack))
 				{
 					ItemStack containerStack = ingredientStack.getItem().getContainerItem(ingredientStack);
 
-					if (containerStack != null && containerStack.isItemStackDamageable()
-							&& containerStack.getItemDamage() > containerStack.getMaxDamage())
+					if (containerStack != null)
 					{
-						MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(thePlayer, containerStack));
-						continue;
+						boolean isDamageable = containerStack.isItemStackDamageable() ||
+							containerStack.getItem() instanceof ItemKnife;
+
+						if (isDamageable && containerStack.getItemDamage() > containerStack.getMaxDamage())
+						{
+							MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(thePlayer, containerStack));
+							continue;
+						}
 					}
 
 					if (!ingredientStack.getItem().doesContainerItemLeaveCraftingGrid(ingredientStack)
