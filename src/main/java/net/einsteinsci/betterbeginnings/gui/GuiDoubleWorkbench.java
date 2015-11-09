@@ -101,6 +101,8 @@ public class GuiDoubleWorkbench extends GuiContainer
 						drawItemStack(result, (width - xSize) / 2 + slot.xDisplayPosition, (height - ySize) / 2 +
 								slot.yDisplayPosition, "");
 					}
+
+					break;
 				}
 			}
 		}
