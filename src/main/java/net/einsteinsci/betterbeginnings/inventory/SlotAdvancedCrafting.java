@@ -103,7 +103,7 @@ public class SlotAdvancedCrafting extends Slot
 		}
 
 		if (stack.getItem() instanceof ItemSword
-				&& ((ItemSword)stack.getItem()).getToolMaterialName().equals("noobwood"))
+				&& !((ItemSword)stack.getItem()).getToolMaterialName().equals("noobwood"))
 		{
 			thePlayer.addStat(AchievementList.buildSword, 1);
 		}
