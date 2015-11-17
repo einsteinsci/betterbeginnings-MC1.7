@@ -170,7 +170,7 @@ public class BBConfig
 			Block b = RegistryUtil.getBlockFromRegistry(name);
 			if (b == null)
 			{
-				ModMain.log(Level.WARN, "No block found matching '" + name + "'.");
+				ModMain.log(Level.ERROR, "No block found matching '" + name + "'.");
 			}
 			else
 			{
@@ -232,7 +232,7 @@ public class BBConfig
 			int equalsAt = entry.indexOf("=");
 			if (colonAt == -1 || equalsAt == -1)
 			{
-				ModMain.log(Level.WARN, "Invalid format: '" + entry + "'.");
+				ModMain.log(Level.ERROR, "Invalid format: '" + entry + "'.");
 				continue;
 			}
 
@@ -243,7 +243,7 @@ public class BBConfig
 
 			if (item == null)
 			{
-				ModMain.log(Level.WARN, "No item found within '" + entry + "'.");
+				ModMain.log(Level.ERROR, "No item found within '" + entry + "'.");
 				continue;
 			}
 

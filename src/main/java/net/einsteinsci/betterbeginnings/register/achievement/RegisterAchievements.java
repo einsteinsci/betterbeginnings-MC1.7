@@ -30,7 +30,7 @@ public class RegisterAchievements
 
 	public static void addAchievements()
 	{
-		achievements = new HashMap<String, Achievement>();
+		achievements = new HashMap<>();
 
 		achievements.put("flintKnife", new Achievement("achievement.flintKnife", "flintKnife", 0, 0,
 		                                               RegisterItems.flintKnife, null).initIndependentStat()

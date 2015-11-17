@@ -21,6 +21,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
+import net.minecraft.stats.Achievement;
+import net.minecraft.stats.AchievementList;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -261,8 +263,6 @@ public class BBEventHandler
 
 		if (BBConfig.alwaysBreakable.contains(block))
 		{
-			ModMain.logDebug("Skipped block-breaking for block '" + block.getUnlocalizedName() +
-				"'. Block is marked as always breakable in config.");
 			return;
 		}
 
@@ -425,6 +425,11 @@ public class BBEventHandler
 		if (e.crafting.getItem() == Item.getItemFromBlock(RegisterBlocks.brickOven))
 		{
 			RegisterAchievements.achievementGet(e.player, "makeBrickOven");
+		}
+
+		if (e.crafting.getItem() == Item.getItemFromBlock(RegisterBlocks.doubleWorkbench))
+		{
+			e.player.addStat(AchievementList.buildWorkBench, 1);
 		}
 
 		if (e.crafting.getItem() == Items.cake)
