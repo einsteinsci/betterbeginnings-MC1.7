@@ -111,9 +111,7 @@ public class InventoryWorkbenchAdditionalMaterials implements IInventory
 
 	@Override
 	public void markDirty()
-	{
-
-	}
+	{ }
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player)
@@ -123,15 +121,11 @@ public class InventoryWorkbenchAdditionalMaterials implements IInventory
 
 	@Override
 	public void openInventory()
-	{
-
-	}
+	{ }
 
 	@Override
 	public void closeInventory()
-	{
-
-	}
+	{ }
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack)

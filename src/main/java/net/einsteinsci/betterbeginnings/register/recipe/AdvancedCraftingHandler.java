@@ -193,8 +193,9 @@ public class AdvancedCraftingHandler
 		return false;
 	}
 
-	public ItemStack findMatchingRecipe(InventoryCrafting crafting, InventoryWorkbenchAdditionalMaterials materials,
-										World world)
+	public ItemStack findMatchingRecipeResult(InventoryCrafting crafting,
+		InventoryWorkbenchAdditionalMaterials materials,
+		World world)
 	{
 		int i = 0;
 		ItemStack itemstack = null;
@@ -246,6 +247,67 @@ public class AdvancedCraftingHandler
 				if (advrecipe.matches(crafting, materials, world))
 				{
 					return advrecipe.getCraftingResult(crafting);
+				}
+			}
+
+			return null;
+		}
+	}
+
+	public AdvancedRecipe findMatchingRecipe(InventoryCrafting crafting,
+		InventoryWorkbenchAdditionalMaterials materials,
+		World world)
+	{
+		int i = 0;
+		ItemStack itemstack = null;
+		ItemStack itemstack1 = null;
+		int j;
+
+		for (j = 0; j < crafting.getSizeInventory(); ++j)
+		{
+			ItemStack itemstack2 = crafting.getStackInSlot(j);
+
+			if (itemstack2 != null)
+			{
+				if (i == 0)
+				{
+					itemstack = itemstack2;
+				}
+
+				if (i == 1)
+				{
+					itemstack1 = itemstack2;
+				}
+
+				++i;
+			}
+		}
+
+		if (i == 2 && itemstack.getItem() == itemstack1.getItem() && itemstack.stackSize == 1 &&
+			itemstack1.stackSize == 1 && itemstack.getItem().isRepairable())
+		{
+			Item item = itemstack.getItem();
+			int j1 = item.getMaxDamage() - itemstack.getItemDamageForDisplay();
+			int k = item.getMaxDamage() - itemstack1.getItemDamageForDisplay();
+			int l = j1 + k + item.getMaxDamage() * 5 / 100;
+			int i1 = item.getMaxDamage() - l;
+
+			if (i1 < 0)
+			{
+				i1 = 0;
+			}
+
+			return null;
+		}
+		else
+		{
+			for (j = 0; j < recipes.size(); ++j)
+			{
+				AdvancedRecipe advrecipe = recipes.get(j);
+
+				if (advrecipe.matches(crafting, materials, world))
+				{
+					return advrecipe;
 				}
 			}
 

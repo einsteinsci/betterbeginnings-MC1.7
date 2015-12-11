@@ -35,13 +35,16 @@ public class SlotAdvancedCrafting extends Slot
 	 */
 	private int amountCrafted;
 
-	public SlotAdvancedCrafting(EntityPlayer player, IInventory matrix, IInventory resultInv,
-								IInventory addedMats, int id, int x, int y)
+	private ContainerDoubleWorkbench container;
+
+	public SlotAdvancedCrafting(EntityPlayer player, ContainerDoubleWorkbench container_, IInventory matrix,
+		IInventory resultInv, IInventory addedMats, int id, int x, int y)
 	{
 		super(resultInv, id, x, y);
 		thePlayer = player;
 		craftMatrix = matrix;
 		additionalMaterials = addedMats;
+		container = container_;
 	}
 
 	/**
@@ -182,7 +185,7 @@ public class SlotAdvancedCrafting extends Slot
 			if (matStack != null)
 			{
 				int amount = 0;
-				AdvancedRecipe advRecipe = AdvancedCraftingHandler.AdvancedRecipeByResult(resultStack);
+				AdvancedRecipe advRecipe = container.getLastAdvancedRecipe();
 
 				if (advRecipe != null)
 				{

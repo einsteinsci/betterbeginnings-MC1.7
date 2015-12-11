@@ -2,6 +2,7 @@ package net.einsteinsci.betterbeginnings.inventory;
 
 import net.einsteinsci.betterbeginnings.register.RegisterBlocks;
 import net.einsteinsci.betterbeginnings.register.recipe.AdvancedCraftingHandler;
+import net.einsteinsci.betterbeginnings.register.recipe.AdvancedRecipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -24,13 +25,15 @@ public class ContainerDoubleWorkbench extends Container
 	private int posY;
 	private int posZ;
 
+	private AdvancedRecipe lastAdvancedRecipe;
+
 	public ContainerDoubleWorkbench(InventoryPlayer invPlayer, World world, int x, int y, int z)
 	{
 		worldObj = world;
 		posX = x;
 		posY = y;
 		posZ = z;
-		resultSlot = new SlotAdvancedCrafting(invPlayer.player, craftMatrix, craftResult, addedMats, 0, 129, 35);
+		resultSlot = new SlotAdvancedCrafting(invPlayer.player, this, craftMatrix, craftResult, addedMats, 0, 129, 35);
 		addSlotToContainer(resultSlot);
 		int i;
 		int j;
@@ -216,7 +219,13 @@ public class ContainerDoubleWorkbench extends Container
 	public void onCraftMatrixChanged(IInventory inventory)
 	{
 		boolean hasAddedMats = false;
-		ItemStack result = AdvancedCraftingHandler.crafting().findMatchingRecipe(craftMatrix, addedMats, worldObj);
+		ItemStack result = AdvancedCraftingHandler.crafting()
+			.findMatchingRecipeResult(craftMatrix, addedMats, worldObj);
+		if (result != null)
+		{
+			lastAdvancedRecipe = AdvancedCraftingHandler.crafting().findMatchingRecipe(craftMatrix,
+				addedMats, worldObj);
+		}
 
 		if (result == null)
 		{
@@ -248,5 +257,10 @@ public class ContainerDoubleWorkbench extends Container
 		return worldObj.getBlock(posX, posY, posZ) == RegisterBlocks.doubleWorkbench &&
 				worldObj.getBlockMetadata(posX, posY, posZ) != 0 &&
 				player.getDistanceSq(posX + 0.5D, posY + 0.5D, posZ + 0.5D) <= 64.0D;
+	}
+
+	public AdvancedRecipe getLastAdvancedRecipe()
+	{
+		return lastAdvancedRecipe;
 	}
 }
