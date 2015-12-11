@@ -859,12 +859,24 @@ public class RegisterRecipes
 		                                          'D', "gemDiamond");
 
 		// Diamond Tools/Weapons
-		AdvancedCraftingHandler.addAdvancedRecipe(new ItemStack(Items.diamond_pickaxe),
-		                                          new Object[] {"dustRedstone", 5,
-			                                          new ItemStack(RegisterItems.leatherStrip, 3)},
-		                                          "DDD", " / ", " / ",
-		                                          'D', "gemDiamond",
-		                                          '/', "stickWood");
+		if (BBConfig.requireBlazePowderForDiamondPick)
+		{
+			AdvancedCraftingHandler.addAdvancedRecipe(new ItemStack(Items.diamond_pickaxe),
+				new Object[] {"dustRedstone", 5, new ItemStack(Items.blaze_powder, 3),
+					new ItemStack(RegisterItems.leatherStrip, 3)},
+				"DDD", " / ", " / ",
+				'D', "gemDiamond",
+				'/', "stickWood");
+		}
+		else
+		{
+			AdvancedCraftingHandler.addAdvancedRecipe(new ItemStack(Items.diamond_pickaxe),
+				new Object[] {"dustRedstone", 5,
+					new ItemStack(RegisterItems.leatherStrip, 3)},
+				"DDD", " / ", " / ",
+				'D', "gemDiamond",
+				'/', "stickWood");
+		}
 		AdvancedCraftingHandler.addAdvancedRecipe(new ItemStack(Items.diamond_sword),
 		                                          new Object[] {"dustRedstone", 4,
 				                                          new ItemStack(Items.blaze_powder, 5),
@@ -924,12 +936,23 @@ public class RegisterRecipes
 
 		if (BBConfig.allowStringAsToolBinding)
 		{
-			AdvancedCraftingHandler.addAdvancedRecipe(new ItemStack(Items.diamond_pickaxe),
-				new Object[] {"dustRedstone", 5,
-					"itemStringTough", 6},
-				"DDD", " / ", " / ",
-				'D', "gemDiamond",
-				'/', "stickWood");
+			if (BBConfig.requireBlazePowderForDiamondPick)
+			{
+				AdvancedCraftingHandler.addAdvancedRecipe(new ItemStack(Items.diamond_pickaxe),
+					new Object[] {"dustRedstone", 5, new ItemStack(Items.blaze_powder, 3),
+						"itemStringTough", 4},
+					"DDD", " / ", " / ",
+					'D', "gemDiamond",
+					'/', "stickWood");
+			}
+			else
+			{
+				AdvancedCraftingHandler.addAdvancedRecipe(new ItemStack(Items.diamond_pickaxe),
+					new Object[] {"dustRedstone", 5, "itemStringTough", 4},
+					"DDD", " / ", " / ",
+					'D', "gemDiamond",
+					'/', "stickWood");
+			}
 			AdvancedCraftingHandler.addAdvancedRecipe(new ItemStack(Items.diamond_sword),
 				new Object[] {"dustRedstone", 4,
 					new ItemStack(Items.blaze_powder, 5),
@@ -1047,6 +1070,16 @@ public class RegisterRecipes
 				"/  ", " II",
 				'/', "stickWood",
 				'I', "ingotIron");
+		}
+
+		if (BBConfig.netherlessBlazePowderRecipe)
+		{
+			AdvancedCraftingHandler.addAdvancedRecipe(new ItemStack(Items.blaze_powder, 4),
+				new Object[]{new ItemStack(Items.gunpowder, 8), new ItemStack(Items.flint, 8)},
+				"CRC", "RfR", "CRC",
+				'C', "blockCoal",
+				'R', "blockRedstone",
+				'f', Items.flint_and_steel);
 		}
 	}
 
