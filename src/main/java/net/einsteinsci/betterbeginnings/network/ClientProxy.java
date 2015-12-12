@@ -5,6 +5,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import net.einsteinsci.betterbeginnings.ModMain;
 import net.einsteinsci.betterbeginnings.renderer.RenderCampfire;
 import net.einsteinsci.betterbeginnings.tileentity.TileEntityCampfire;
+import net.einsteinsci.betterbeginnings.util.LogUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,9 +22,7 @@ public class ClientProxy extends ServerProxy
 	}
 
 	public void registerTileEntitySpecialRenderer()
-	{
-
-	}
+	{ }
 
 	@Override
 	public EntityPlayer getPlayerFromMessageContext(MessageContext ctx)
@@ -39,7 +38,7 @@ public class ClientProxy extends ServerProxy
 				return ctx.getServerHandler().playerEntity;
 			}
 			default:
-				ModMain.log(Level.ERROR, "Invalid side in TestMsgHandler: " + ctx.side);
+				LogUtil.log(Level.ERROR, "Invalid side in TestMsgHandler: " + ctx.side);
 		}
 		return null;
 	}

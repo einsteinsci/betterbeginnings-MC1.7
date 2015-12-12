@@ -4,20 +4,17 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import net.einsteinsci.betterbeginnings.ModMain;
 import net.einsteinsci.betterbeginnings.gui.BBGuiHandler;
+import net.einsteinsci.betterbeginnings.util.LogUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import org.apache.logging.log4j.Level;
 
 public class ServerProxy
 {
 	public void registerRenderThings()
-	{
-
-	}
+	{ }
 
 	public void registerTileEntitySpecialRenderer()
-	{
-
-	}
+	{ }
 
 	public void registerNetworkStuff()
 	{
@@ -29,12 +26,12 @@ public class ServerProxy
 		switch (ctx.side)
 		{
 			case CLIENT:
-				ModMain.log(Level.ERROR, "Message for CLIENT received for dedicated server");
+				LogUtil.log(Level.ERROR, "Message for CLIENT received for dedicated server");
 				return null;
 			case SERVER:
 				return ctx.getServerHandler().playerEntity;
 			default:
-				ModMain.log(Level.ERROR, "Invalid side in RepairTableRepairPacket.Handler: " + ctx.side);
+				LogUtil.log(Level.ERROR, "Invalid side in RepairTableRepairPacket.Handler: " + ctx.side);
 				return null;
 		}
 	}

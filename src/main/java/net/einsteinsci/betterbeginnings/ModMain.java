@@ -16,6 +16,7 @@ import net.einsteinsci.betterbeginnings.network.PacketNetherBrickOvenFuelLevel;
 import net.einsteinsci.betterbeginnings.network.ServerProxy;
 import net.einsteinsci.betterbeginnings.register.*;
 import net.einsteinsci.betterbeginnings.register.achievement.RegisterAchievements;
+import net.einsteinsci.betterbeginnings.util.LogUtil;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.AchievementPage;
@@ -49,31 +50,10 @@ public class ModMain
 	public static ServerProxy proxy;
 	public BBEventHandler eventHandler = new BBEventHandler();
 
-	public static void logDebug(String text)
-	{
-		if (BBConfig.debugLogging)
-		{
-			log(Level.DEBUG, text);
-		}
-	}
-
-	public static void log(Level level, String text)
-	{
-		FMLLog.log(NAME, level, text);
-	}
-
-	public static void logDebug(Level level, String text)
-	{
-		if (BBConfig.debugLogging)
-		{
-			log(level, text);
-		}
-	}
-
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		log("Starting pre-initialization...");
+		LogUtil.log("Starting pre-initialization...");
 
 		configFile = new Configuration(e.getSuggestedConfigurationFile());
 		configFile.load();
@@ -96,11 +76,6 @@ public class ModMain
 		RegisterItems.register();
 		RegisterBlocks.register();
 		RegisterTileEntities.register();
-	}
-
-	public static void log(String text)
-	{
-		log(Level.INFO, text);
 	}
 
 	@EventHandler
@@ -128,6 +103,6 @@ public class ModMain
 		RegisterItems.tweakVanilla();
 		Worldgen.addWorldgen();
 		AchievementPage.registerAchievementPage(new AchievementPage(NAME, RegisterAchievements.getAchievements()));
-		log("Finished post-initialization.");
+		LogUtil.log("Finished post-initialization.");
 	}
 }
