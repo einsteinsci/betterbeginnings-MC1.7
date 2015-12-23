@@ -31,11 +31,15 @@ public class RegisterRecipes
 
 		// String
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.string, 4),
-		                                              new ItemStack(Blocks.wool, 1, OreDictionary.WILDCARD_VALUE),
-		                                              "itemKnife"));
+			new ItemStack(Blocks.wool, 1, OreDictionary.WILDCARD_VALUE),
+			"itemKnife"));
 
 		// Twine
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(RegisterItems.twine, 2), Blocks.vine, "itemKnife"));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(RegisterItems.twine),
+			new ItemStack(Blocks.tallgrass, 1, 1), "itemKnife"));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(RegisterItems.twine),
+			new ItemStack(Blocks.tallgrass, 1, 2), "itemKnife"));
 
 		// Spit
 		GameRegistry.addShapelessRecipe(new ItemStack(RegisterItems.rotisserie), RegisterItems.roastingStick,
