@@ -203,6 +203,12 @@ public class TileEntityNetherBrickOven extends TileEntity implements ISidedInven
 	}
 
 	@Override
+	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet)
+	{
+		readFromNBT(packet.func_148857_g());
+	}
+
+	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
 		return true;
@@ -215,12 +221,6 @@ public class TileEntityNetherBrickOven extends TileEntity implements ISidedInven
 
 		return fuelTank.getFluidAmount() < fuelTank.getCapacity() && fuelTank.getFluid().getFluid() == fluid;
 		*/
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet)
-	{
-		readFromNBT(packet.func_148857_g());
 	}
 
 	@Override

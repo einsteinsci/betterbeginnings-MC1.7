@@ -166,10 +166,6 @@ public class ContainerSimpleWorkbench extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer player)
 	{
-		// return worldObj.getBlock(posX, posY, posZ) !=
-		// RegisterBlocks.blockDoubleWorkbench ? false : player.getDistanceSq(
-		// posX + 0.5D, posY + 0.5D, posZ + 0.5D) <= 64.0D;
-
 		return worldObj.getBlock(posX, posY, posZ) == RegisterBlocks.doubleWorkbench
 				&& worldObj.getBlockMetadata(posX, posY, posZ) == 0
 				&& player.getDistanceSq(posX + 0.5D, posY + 0.5D, posZ + 0.5D) <= 64.0D;

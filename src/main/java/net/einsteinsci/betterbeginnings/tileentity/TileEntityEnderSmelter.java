@@ -13,6 +13,9 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.Random;
@@ -182,6 +185,20 @@ public class TileEntityEnderSmelter extends TileEntity implements ISidedInventor
 				markDirty();
 			}
 		}
+	}
+
+	@Override
+	public Packet getDescriptionPacket()
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		writeToNBT(tag);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet)
+	{
+		readFromNBT(packet.func_148857_g());
 	}
 
 	private boolean canSmelt()
