@@ -72,9 +72,10 @@ public class ItemKnife extends ItemTool
 	@Override
 	public ItemStack getContainerItem(ItemStack itemStack)
 	{
-		itemStack.setItemDamage(itemStack.getItemDamage() + 1);
+		ItemStack res = itemStack.copy();
+		res.setItemDamage(itemStack.getItemDamage() + 1);
 
-		return itemStack;
+		return res;
 	}
 
 	// Allows durability-based crafting.
