@@ -127,7 +127,7 @@ public class ContainerBrickOven extends Container
 					return null;
 				}
 			}
-			else if (slotId >= 37 && slotId < 46) // hotbar
+			else if (slotId > 37 && slotId <= 46) // hotbar
 			{
 				if (TileEntityBrickOven.isItemFuel(itemstack1))
 				{
