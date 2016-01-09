@@ -22,6 +22,7 @@ item.ironKnife.name=Железный нож
 item.goldKnife.name=Золотой нож
 item.diamondKnife.name=Алмазный нож
 item.pan.name=Сковорода
+item.rotisserie.name=Вертел
 
 item.flintHatchet.name=Кремниевый топорик
 item.bonePickaxe.name=Костяная кирка
@@ -110,3 +111,8 @@ achievement.notchApple=Еда Богов
 achievement.notchApple.desc=Испеките зачарованное золотое яблоко
 
 damage.face=%1$s разбил своё лицо об %2$s
+
+blockbreak.fail=Почти. Ещё раз и получится.
+blockbreak.success=Ай! Но хотя бы получилось.
+blockbreak.wrongtool=Неверный инструмент!
+blockbreak.wrongtool.message=Требуется %1$s %2$s.
