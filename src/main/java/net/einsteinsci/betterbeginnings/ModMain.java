@@ -11,6 +11,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.einsteinsci.betterbeginnings.config.BBConfig;
 import net.einsteinsci.betterbeginnings.event.BBEventHandler;
 import net.einsteinsci.betterbeginnings.event.Worldgen;
+import net.einsteinsci.betterbeginnings.minetweaker.MineTweakerCompat;
 import net.einsteinsci.betterbeginnings.network.PacketCampfireState;
 import net.einsteinsci.betterbeginnings.network.PacketNetherBrickOvenFuelLevel;
 import net.einsteinsci.betterbeginnings.network.ServerProxy;
@@ -22,6 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+
 import org.apache.logging.log4j.Level;
 
 @Mod(modid = ModMain.MODID, version = ModMain.VERSION, name = ModMain.NAME,
@@ -90,6 +92,10 @@ public class ModMain
 		if (BBConfig.moduleFurnaces)
 		{
 			RemoveRecipes.removeFurnaceRecipes();
+		}
+		if(Loader.isModLoaded("MineTweaker3"))
+		{
+			MineTweakerCompat.register();
 		}
 	}
 

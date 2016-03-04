@@ -1,12 +1,15 @@
 package net.einsteinsci.betterbeginnings.register.recipe;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import net.einsteinsci.betterbeginnings.tileentity.TileEntityBrickOven;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-
-import java.util.*;
 
 public class BrickOvenRecipeHandler
 {
@@ -107,6 +110,21 @@ public class BrickOvenRecipeHandler
 	public static void addShapelessRecipe(ItemStack output, Object... args)
 	{
 		instance().putShapelessRecipe(output, args);
+	}
+	
+	public static List<IBrickOvenRecipe> removeOutput(ItemStack output)
+	{
+		List<IBrickOvenRecipe> removedRecipes = new ArrayList<IBrickOvenRecipe>();
+		for (Iterator<IBrickOvenRecipe> iter = instance().recipes.iterator(); iter.hasNext();)
+		{
+			IBrickOvenRecipe ovenRecipe = iter.next();
+			if(ItemStack.areItemStackTagsEqual(ovenRecipe.getRecipeOutput(), output) && output.isItemEqual(ovenRecipe.getRecipeOutput()))
+			{
+				removedRecipes.add(ovenRecipe);
+				iter.remove();
+			}
+		}
+		return removedRecipes;
 	}
 
 	public BrickOvenShapelessRecipe putShapelessRecipe(ItemStack output, Object... args)

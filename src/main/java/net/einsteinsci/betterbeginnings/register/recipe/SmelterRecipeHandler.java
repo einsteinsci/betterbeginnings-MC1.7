@@ -8,6 +8,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.*;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Maps;
+
 public class SmelterRecipeHandler
 {
 	private static final SmelterRecipeHandler SMELTINGBASE = new SmelterRecipeHandler();
@@ -51,6 +53,50 @@ public class SmelterRecipeHandler
 	public static void addRecipe(ItemStack input, ItemStack output, float experience, int gravel, int bonus, float chance)
 	{
 		smelting().putLists(input, output, experience, gravel, bonus, chance);
+	}
+
+	public static void addRecipe(String oreDict, ItemStack output, float experience, int gravel, int bonus, float chance)
+	{
+		for(ItemStack ore : OreDictionary.getOres(oreDict, false))
+		{
+			addRecipe(ore, output, experience, gravel, bonus, chance);
+		}
+	}
+	
+	public static void addRecipe(SmelterRecipe recipe, float experience)
+	{
+		smelting().recipes.add(recipe);
+		smelting().experienceList.put(recipe.getInput(), experience);
+	}
+
+	public static void removeRecipe(ItemStack input, ItemStack output)
+	{
+		for(Iterator<SmelterRecipe> iter = SmelterRecipeHandler.getRecipes().iterator(); iter.hasNext();)
+		{
+			SmelterRecipe recipe = iter.next();
+			if(ItemStack.areItemStacksEqual(recipe.getInput(), input))
+			{
+				iter.remove();
+				smelting().experienceList.remove(input);
+				break;
+			}
+		}
+	}
+	
+	public static Map<SmelterRecipe, Float> removeOutput(ItemStack output)
+	{
+		Map<SmelterRecipe, Float> removedRecipes = Maps.newHashMap();
+		for(Iterator<SmelterRecipe> iter = SmelterRecipeHandler.getRecipes().iterator(); iter.hasNext();)
+		{
+			SmelterRecipe recipe = iter.next();
+			if(ItemStack.areItemStacksEqual(recipe.getOutput(), output))
+			{
+				removedRecipes.put(recipe, smelting().giveExperience(recipe.getInput()));
+				iter.remove();
+				smelting().experienceList.remove(output);
+			}
+		}
+		return removedRecipes;
 	}
 
 	public ItemStack getSmeltingResult(ItemStack input)
@@ -109,7 +155,7 @@ public class SmelterRecipeHandler
 	{
 		return stack2.getItem() == stack.getItem() &&
 				(stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE || stack2.getItemDamage() == stack
-						.getItemDamage());
+				.getItemDamage());
 	}
 
 	public int getBonus(ItemStack input)
@@ -141,5 +187,10 @@ public class SmelterRecipeHandler
 	public static List<SmelterRecipe> getRecipes()
 	{
 		return smelting().recipes;
+	}
+	
+	public static Map getXPList()
+	{
+		return smelting().experienceList;
 	}
 }
