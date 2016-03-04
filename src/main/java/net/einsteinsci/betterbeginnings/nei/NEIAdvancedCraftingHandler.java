@@ -30,7 +30,7 @@ public class NEIAdvancedCraftingHandler extends TemplateRecipeHandler
 			inputs = new PositionedStack[9];
 			output = new PositionedStack(rec.getRecipeOutput(), 132, 51);
 
-			ItemStack[] grid = rec.getThreeByThree();
+			OreRecipeElement[] grid = rec.getThreeByThree();
 			for (int y = 0; y < 3; y++)
 			{
 				for (int x = 0; x < 3; x++)
@@ -42,7 +42,7 @@ public class NEIAdvancedCraftingHandler extends TemplateRecipeHandler
 						continue;
 					}
 
-					inputs[i] = new PositionedStack(grid[i], 38 + x * 18, 33 + y * 18);
+					inputs[i] = new PositionedStack(grid[i].getValidItems(), 38 + x * 18, 33 + y * 18);
 				}
 			}
 
@@ -55,7 +55,7 @@ public class NEIAdvancedCraftingHandler extends TemplateRecipeHandler
 					continue;
 				}
 
-				catalysts[i] = new PositionedStack(side[i].getFirst(), 11, 23 + i * 18);
+				catalysts[i] = new PositionedStack(side[i].getValidItems(), 11, 23 + i * 18);
 			}
 		}
 
@@ -110,8 +110,6 @@ public class NEIAdvancedCraftingHandler extends TemplateRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		List<ItemStack> foundOutputs = new ArrayList<>();
-
 		for (AdvancedRecipe adv : AdvancedCraftingHandler.getRecipeList())
 		{
 			if (adv.hideFromNEI)

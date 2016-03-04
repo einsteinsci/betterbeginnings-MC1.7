@@ -4,6 +4,7 @@
 /out/*
 /asm/*
 /bin/*
+/libs/*
 *.psd
 *.iml
 *.ipr
@@ -15,3 +16,4 @@
 
 *.classpath
 *.project
+/.settings/*
