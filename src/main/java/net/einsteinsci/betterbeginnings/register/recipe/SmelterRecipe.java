@@ -5,17 +5,17 @@ import net.minecraft.item.ItemStack;
 public class SmelterRecipe
 {
 	private ItemStack outputStack;
-	private ItemStack inputStack;
+	private OreRecipeElement input;
 	private float experienceGiven;
 	private int gravelNeeded;
 
 	private int bonusIfEnder;
 	private float bonusChance;
 
-	public SmelterRecipe(ItemStack output, ItemStack input, float experience, int gravel, int bonus, float chance)
+	public SmelterRecipe(ItemStack output, OreRecipeElement input, float experience, int gravel, int bonus, float chance)
 	{
 		outputStack = output;
-		inputStack = input;
+		this.input = input;
 		experienceGiven = experience;
 		gravelNeeded = gravel;
 		bonusIfEnder = bonus;
@@ -27,9 +27,9 @@ public class SmelterRecipe
 		return outputStack;
 	}
 
-	public ItemStack getInput()
+	public OreRecipeElement getInput()
 	{
-		return inputStack;
+		return input;
 	}
 
 	public float getExperience()

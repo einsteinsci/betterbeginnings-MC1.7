@@ -6,6 +6,7 @@ import codechicken.nei.recipe.FurnaceRecipeHandler;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import net.einsteinsci.betterbeginnings.gui.GuiKiln;
 import net.einsteinsci.betterbeginnings.register.recipe.KilnRecipes;
+import net.einsteinsci.betterbeginnings.register.recipe.OreRecipeElement;
 import net.einsteinsci.betterbeginnings.tileentity.TileEntityKiln;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
@@ -25,9 +26,9 @@ public class NEIKilnRecipeHandler extends TemplateRecipeHandler
 		PositionedStack input;
 		PositionedStack output;
 
-		public KilnCachedRecipe(ItemStack _input, ItemStack _output)
+		public KilnCachedRecipe(OreRecipeElement inp, ItemStack _output)
 		{
-			input = new PositionedStack(_input, 51, 6);
+			input = new PositionedStack(inp.getValidItems(), 51, 6);
 			output = new PositionedStack(_output, 111, 24);
 		}
 
@@ -83,11 +84,9 @@ public class NEIKilnRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for (Object obj : KilnRecipes.getSmeltingList().entrySet())
+		for (Map.Entry<OreRecipeElement, ItemStack> entry : KilnRecipes.getSmeltingList().entrySet())
 		{
-			Map.Entry entry = (Map.Entry)obj;
-
-			ItemStack inp = (ItemStack)entry.getKey();
+			OreRecipeElement inp = entry.getKey();
 			ItemStack outp = (ItemStack)entry.getValue();
 
 			if (outp.getItem() == result.getItem() &&
@@ -102,16 +101,12 @@ public class NEIKilnRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for (Object obj : KilnRecipes.getSmeltingList().entrySet())
+		for (Map.Entry<OreRecipeElement, ItemStack> entry : KilnRecipes.getSmeltingList().entrySet())
 		{
-			Map.Entry entry = (Map.Entry)obj;
+			OreRecipeElement inp = entry.getKey();
+			ItemStack outp = entry.getValue();
 
-			ItemStack inp = (ItemStack)entry.getKey();
-			ItemStack outp = (ItemStack)entry.getValue();
-
-			if (inp.getItem() == ingredient.getItem() &&
-				(inp.getItemDamage() == OreDictionary.WILDCARD_VALUE ||
-					inp.getItemDamage() == ingredient.getItemDamage()))
+			if (inp.matches(ingredient))
 			{
 				arecipes.add(new KilnCachedRecipe(inp, outp));
 			}
