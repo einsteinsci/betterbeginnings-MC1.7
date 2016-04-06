@@ -25,19 +25,19 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class SmelterTweaker 
 {
 	@ZenMethod
-	public static void addRecipe(IIngredient input, IItemStack output, float xp, int gravel, int bonus, float bonusChance)
+	public static void addRecipe(IItemStack output, IIngredient input, float xp, int gravel, int bonus, float bonusChance)
 	{
 		MineTweakerAPI.apply(new AddSmelterRecipe(input, output, xp, gravel, bonus, bonusChance));
 	}
 
 	@ZenMethod
-	public static void addRecipe(IIngredient input, IItemStack output)
+	public static void addRecipe(IItemStack output, IIngredient input)
 	{
 		MineTweakerAPI.apply(new AddSmelterRecipe(input, output, 0.6f, 1, 1, 0.3f));
 	}
 	
 	@ZenMethod
-	public static void removeRecipe(IIngredient input, IItemStack output)
+	public static void removeRecipe(IItemStack output, IIngredient input)
 	{
 		MineTweakerAPI.apply(new RemoveSmelterRecipe(input, output));
 	}
@@ -139,7 +139,6 @@ public class SmelterTweaker
 			{
 				SmelterRecipeHandler.removeRecipe(MineTweakerMC.getItemStack(inputStack), output);
 			}
-
 		}
 
 		@Override

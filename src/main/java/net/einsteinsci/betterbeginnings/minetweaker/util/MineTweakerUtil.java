@@ -1,6 +1,7 @@
 package net.einsteinsci.betterbeginnings.minetweaker.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -8,57 +9,85 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import minetweaker.api.item.IIngredient;
+import minetweaker.api.item.IItemStack;
+import minetweaker.api.minecraft.MineTweakerMC;
+import minetweaker.api.oredict.IOreDictEntry;
+import net.einsteinsci.betterbeginnings.register.recipe.OreRecipeElement;
 import net.minecraft.item.ItemStack;
 
 public class MineTweakerUtil 
 {
-	public static <T> T[] convert2dArrayTo1dArray(T[][] array)
+	public static <T> T[] convert2dArrayTo1dArray(T[][] array, boolean cullNullRows)
 	{
 		List<T> tempList = new ArrayList<T>();
+		int nullRows = 0;
 		for(T[] childArray : array)
 		{
+			boolean rowIsAllNull = true;
 			for(T object : childArray)
 			{
-				tempList.add(object);
+				if(object != null)
+				{
+					rowIsAllNull = false;
+					nullRows++;
+				}
+			}
+			if(!rowIsAllNull)
+			{
+				tempList.addAll(Arrays.asList(childArray));
+			}
+		}
+		if(!cullNullRows)
+		{
+			for(int nr = 0; nr < nullRows; nr++)
+			{
+				tempList.add(null);
+				tempList.add(null);
+				tempList.add(null);
 			}
 		}
 		return tempList.toArray(array[0]);
 	}
 
-	public static Object[] formatShapedRecipeInputs(Object[][] inputs)
+	public static int computeRecipeWidth(Object[][] inputs)
 	{
-		Character[] inputSymbols = new Character[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'};
-		Map<Object, Character> uniqueInputs = new HashMap<Object, Character>();
-		for(int xa = 0; xa < 3; xa++)
+		int width = 0;
+		for(Object[] row : inputs)
 		{
-			for(int ya = 0; ya < 3; ya++)
+			for(int slot = 0; slot < 3; slot++)
 			{
-				if(!uniqueInputs.containsKey(inputs[xa][ya]))
+				if(row[slot] != null && width < 3)
 				{
-					uniqueInputs.put(inputs[xa][ya], inputSymbols[uniqueInputs.size()]);
+					width++;
 				}
 			}
-		}
-		Character[][] craftingGrid = new Character[3][3];
-		for(int xb = 0; xb < inputs.length; xb++)
-		{
-			for(int yb = 0; yb < inputs[xb].length; yb++)
+			if(width == 3)
 			{
-				craftingGrid[xb][yb] = uniqueInputs.get(inputs[xb][yb]);
+				return width;
 			}
 		}
-		List<Object> formattedInputs = new ArrayList<Object>();
-		for(Character[] charArray : craftingGrid)
+		return width;
+	}
+
+	public static int computeRecipeHeight(Object[][] inputs)
+	{
+		int height = 0;
+		for(Object[] row : inputs)
 		{
-			
-			formattedInputs.add(new String(ArrayUtils.toPrimitive(charArray)));
+			boolean isAllNull = true;
+			for(Object slot : row)
+			{
+				if(slot != null)
+				{
+					isAllNull = false;
+				}
+			}
+			if(!isAllNull)
+			{
+				height++;
+			}
 		}
-		for(Iterator<Object> iter = uniqueInputs.keySet().iterator(); iter.hasNext();)
-		{
-			Object obj = iter.next();
-			formattedInputs.add(uniqueInputs.get(obj));
-			formattedInputs.add(obj);
-		}
-		return formattedInputs.toArray();
+		return height;
 	}
 }

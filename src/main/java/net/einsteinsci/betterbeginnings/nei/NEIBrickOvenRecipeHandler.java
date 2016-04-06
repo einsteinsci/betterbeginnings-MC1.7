@@ -9,6 +9,7 @@ import net.einsteinsci.betterbeginnings.register.recipe.BrickOvenRecipeHandler;
 import net.einsteinsci.betterbeginnings.register.recipe.BrickOvenShapedRecipe;
 import net.einsteinsci.betterbeginnings.register.recipe.BrickOvenShapelessRecipe;
 import net.einsteinsci.betterbeginnings.register.recipe.IBrickOvenRecipe;
+import net.einsteinsci.betterbeginnings.register.recipe.OreRecipeElement;
 import net.einsteinsci.betterbeginnings.tileentity.TileEntityBrickOven;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
@@ -61,19 +62,19 @@ public class NEIBrickOvenRecipeHandler extends TemplateRecipeHandler
 				BrickOvenShapelessRecipe shapeless = (BrickOvenShapelessRecipe)ibr;
 
 				output = new PositionedStack(shapeless.getRecipeOutput(), 119, 10);
-				ItemStack[] stacks = shapeless.getInputs();
+				OreRecipeElement[] stacks = shapeless.getInputs();
 				for (int y = 0; y < 3; y++)
 				{
 					for (int x = 0; x < 3; x++)
 					{
-						int i = y * 3 + x;
+						int i = Math.min(stacks.length -1 , y * 3 + x);
 
 						if (stacks[i] == null)
 						{
 							continue;
 						}
 
-						inputs[i] = new PositionedStack(stacks[i], 25 + x * 18, 6 + y * 18);
+						inputs[i] = new PositionedStack(stacks[i].getFirst(), 25 + x * 18, 6 + y * 18);
 					}
 				}
 			}
@@ -137,19 +138,17 @@ public class NEIBrickOvenRecipeHandler extends TemplateRecipeHandler
 		for (IBrickOvenRecipe ibr : BrickOvenRecipeHandler.getRecipeList())
 		{
 			boolean found = false;
-			ItemStack[] inp = ibr.getInputs();
+			OreRecipeElement[] inp = ibr.getInputs();
 			for (int i = 0; i < inp.length; i++)
 			{
-				ItemStack is = inp[i];
+				OreRecipeElement ore = inp[i];
 
-				if (is == null)
+				if (ore == null)
 				{
 					continue;
 				}
 
-				if (is.getItem() == ingredient.getItem() &&
-					(is.getItemDamage() == ingredient.getItemDamage() ||
-						ingredient.getItemDamage() == OreDictionary.WILDCARD_VALUE))
+				if (ore.matches(ingredient))
 				{
 					found = true;
 					break;

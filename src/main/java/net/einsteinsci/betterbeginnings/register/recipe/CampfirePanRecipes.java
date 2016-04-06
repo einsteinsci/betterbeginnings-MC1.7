@@ -1,19 +1,21 @@
 package net.einsteinsci.betterbeginnings.register.recipe;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.*;
-import java.util.Map.Entry;
-
 public class CampfirePanRecipes
 {
 	private static final CampfirePanRecipes SMELTINGBASE = new CampfirePanRecipes();
 
-	private Map smeltingList = new HashMap();
-	private Map experienceList = new HashMap();
+	private Map<OreRecipeElement, ItemStack> smeltingList = new HashMap<OreRecipeElement, ItemStack>();
+	private Map<ItemStack, Float> experienceList = new HashMap<ItemStack, Float>();
 
 	private CampfirePanRecipes()
 	{
@@ -22,12 +24,17 @@ public class CampfirePanRecipes
 
 	public static void addRecipe(Item input, ItemStack output, float experience)
 	{
-		smelting().addLists(input, output, experience);
+		smelting().addLists(new OreRecipeElement(new ItemStack(input)), output, experience);
+	}
+	
+	public static void addRecipe(String oreDictEntry, ItemStack output, float experience)
+	{
+		smelting().addLists(new OreRecipeElement(oreDictEntry, 1), output, experience);
 	}
 
-	public void addLists(Item input, ItemStack itemStack, float experience)
+	public void addLists(OreRecipeElement input, ItemStack itemStack, float experience)
 	{
-		putLists(new ItemStack(input, 1, OreDictionary.WILDCARD_VALUE), itemStack, experience);
+		putLists(input, itemStack, experience);
 	}
 
 	public static CampfirePanRecipes smelting()
@@ -35,26 +42,32 @@ public class CampfirePanRecipes
 		return SMELTINGBASE;
 	}
 
-	public void putLists(ItemStack itemStack, ItemStack itemStack2, float experience)
+	public void putLists(OreRecipeElement input, ItemStack itemStack2, float experience)
 	{
-		smeltingList.put(itemStack, itemStack2);
+		smeltingList.put(input, itemStack2);
 		experienceList.put(itemStack2, Float.valueOf(experience));
 	}
 
 	public static void addRecipe(Block input, ItemStack output, float experience)
 	{
-		smelting().addLists(Item.getItemFromBlock(input), output, experience);
+		smelting().addLists(new OreRecipeElement(new ItemStack(Item.getItemFromBlock(input))), output, experience);
 	}
 
 	public static void addRecipe(ItemStack input, ItemStack output, float experience)
 	{
-		smelting().putLists(input, output, experience);
+		smelting().putLists(new OreRecipeElement(input), output, experience);
+	}
+	
+	public static void removeRecipe(ItemStack input)
+	{
+		smelting().smeltingList.remove(input);
+		smelting().experienceList.remove(input);
 	}
 
 	public ItemStack getSmeltingResult(ItemStack stack)
 	{
-		Iterator iterator = smeltingList.entrySet().iterator();
-		Entry entry;
+		Iterator<Entry<OreRecipeElement, ItemStack>> iterator = smeltingList.entrySet().iterator();
+		Entry<OreRecipeElement, ItemStack> entry;
 
 		do
 		{
@@ -63,13 +76,18 @@ public class CampfirePanRecipes
 				return null;
 			}
 
-			entry = (Entry)iterator.next();
-		} while (!canBeSmelted(stack, (ItemStack)entry.getKey()));
+			entry = iterator.next();
+		} while (!canBeSmelted(stack, entry.getKey()));
 
 		return (ItemStack)entry.getValue();
 	}
 
-	private boolean canBeSmelted(ItemStack stack, ItemStack stack2)
+	private boolean canBeSmelted(ItemStack stack, OreRecipeElement ore)
+	{
+		return ore.matches(stack);
+	}
+	
+	private boolean canBeSmelted(ItemStack stack, ItemStack stack2) 
 	{
 		return stack2.getItem() == stack.getItem()
 				&& (stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE || stack2.getItemDamage() == stack
@@ -78,8 +96,8 @@ public class CampfirePanRecipes
 
 	public float giveExperience(ItemStack stack)
 	{
-		Iterator iterator = experienceList.entrySet().iterator();
-		Entry entry;
+		Iterator<Entry<ItemStack, Float>> iterator = experienceList.entrySet().iterator();
+		Entry<ItemStack, Float> entry;
 
 		do
 		{
@@ -88,19 +106,24 @@ public class CampfirePanRecipes
 				return 0.0f;
 			}
 
-			entry = (Entry)iterator.next();
-		} while (!canBeSmelted(stack, (ItemStack)entry.getKey()));
+			entry = iterator.next();
+		} while (!canBeSmelted(stack, entry.getKey()));
 
 		if (stack.getItem().getSmeltingExperience(stack) != -1)
 		{
 			return stack.getItem().getSmeltingExperience(stack);
 		}
 
-		return (Float)entry.getValue();
+		return entry.getValue();
 	}
 
-	public static Map getSmeltingList()
+	public static Map<OreRecipeElement, ItemStack> getSmeltingList()
 	{
 		return smelting().smeltingList;
+	}
+	
+	public static Map<ItemStack, Float> getXPList()
+	{
+		return smelting().experienceList;
 	}
 }

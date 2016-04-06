@@ -1,7 +1,11 @@
 package net.einsteinsci.betterbeginnings.minetweaker;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+
+import org.lwjgl.Sys;
 
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
@@ -9,8 +13,12 @@ import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.minecraft.MineTweakerMC;
 import minetweaker.api.oredict.IOreDictEntry;
+import net.einsteinsci.betterbeginnings.minetweaker.util.CampfireRecipeWrapper;
 import net.einsteinsci.betterbeginnings.minetweaker.util.KilnRecipeWrapper;
+import net.einsteinsci.betterbeginnings.register.recipe.CampfirePanRecipes;
+import net.einsteinsci.betterbeginnings.register.recipe.CampfireRecipes;
 import net.einsteinsci.betterbeginnings.register.recipe.KilnRecipes;
+import net.einsteinsci.betterbeginnings.register.recipe.OreRecipeElement;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -19,19 +27,19 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class KilnTweaker 
 {
 	@ZenMethod
-	public static void addRecipe(IIngredient input, IItemStack output, float xp)
+	public static void addRecipe(IItemStack output, IIngredient input, float xp)
 	{
 		MineTweakerAPI.apply(new AddKilnRecipe(input, output, xp));
 	}
 	
 	@ZenMethod
-	public static void addRecipe(IIngredient input, IItemStack output)
+	public static void addRecipe(IItemStack output, IIngredient input)
 	{
 		MineTweakerAPI.apply(new AddKilnRecipe(input, output, 0.2f));
 	}
 	
 	@ZenMethod
-	public static void removeRecipe(IIngredient input, IItemStack output)
+	public static void removeRecipe(IItemStack output, IIngredient input)
 	{
 		MineTweakerAPI.apply(new RemoveKilnRecipe(input, output));
 	}
@@ -74,7 +82,7 @@ public class KilnTweaker
 		@Override
 		public void undo() 
 		{
-				KilnRecipes.removeRecipe(MineTweakerMC.getItemStack(input), null);
+				KilnRecipes.removeRecipe(MineTweakerMC.getItemStack(input));
 		}
 
 		@Override
@@ -119,7 +127,7 @@ public class KilnTweaker
 		{
 			for(IItemStack inputStack : input.getItems())
 			{
-				KilnRecipes.removeRecipe(MineTweakerMC.getItemStack(inputStack), output);
+				KilnRecipes.removeRecipe(MineTweakerMC.getItemStack(inputStack));
 			}
 		}
 
@@ -174,7 +182,17 @@ public class KilnTweaker
 
 		public void apply() 
 		{
-			removedRecipes = KilnRecipes.removeOutput(output);
+			removedRecipes = new ArrayList<KilnRecipeWrapper>();
+			for (Iterator<Entry<OreRecipeElement, ItemStack>> recipeIter = KilnRecipes.getSmeltingList().entrySet().iterator(); recipeIter.hasNext();)
+			{
+				Entry<OreRecipeElement, ItemStack> entry = recipeIter.next();
+				if(ItemStack.areItemStacksEqual(entry.getValue(), output))
+				{
+					removedRecipes.add(new KilnRecipeWrapper(entry.getKey(), output, CampfireRecipes.smelting().giveExperience(output)));
+					recipeIter.remove();
+					KilnRecipes.getXPList().remove(output);
+				}
+			}
 		}
 
 		@Override
@@ -188,20 +206,20 @@ public class KilnTweaker
 		{
 			for(KilnRecipeWrapper r : removedRecipes)
 			{
-				KilnRecipes.addRecipe(r.getInput(), r.getOutput(), r.getXP());
+				r.add();
 			}
 		}
 
 		@Override
 		public String describe() 
 		{
-			return "Removing recipes for " +  output.getDisplayName() + " * "  + output.stackSize + " from Smelter";
+			return "Removing recipes for " +  output.getDisplayName() + " * "  + output.stackSize + " from Kiln";
 		}
 
 		@Override
 		public String describeUndo() 
 		{
-			return "Readding recipes for " + output.getDisplayName() + " * "  + output.stackSize + " to Smelter";
+			return "Readding recipes for " + output.getDisplayName() + " * "  + output.stackSize + " to Kiln";
 		}
 
 		@Override

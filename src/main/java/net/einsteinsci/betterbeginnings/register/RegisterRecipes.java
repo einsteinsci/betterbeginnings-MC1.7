@@ -75,13 +75,13 @@ public class RegisterRecipes
 	private static void addBrickOvenRecipes()
 	{
 		BrickOvenRecipeHandler.addShapedRecipe(new ItemStack(Items.golden_apple), "GGG", "GAG", "GGG",
-			'G', Items.gold_ingot,
+			'G', "ingotGold",
 			'A', Items.apple);
 		BrickOvenRecipeHandler.addShapedRecipe(new ItemStack(Items.golden_apple, 1, 1), "###", "#A#", "###",
-			'#', Blocks.gold_block,
+			'#', "blockGold",
 			'A', Items.apple);
 		BrickOvenRecipeHandler.addShapedRecipe(new ItemStack(Items.golden_carrot), "***", "*C*", "***",
-			'*', Items.gold_nugget, 'C', Items.carrot);
+			'*', "nuggetGold", 'C', Items.carrot);
 		BrickOvenRecipeHandler.addShapedRecipe(new ItemStack(Items.cake), "MMM", "SES", "WWW",
 			'M', Items.milk_bucket,
 		    'S', Items.sugar,

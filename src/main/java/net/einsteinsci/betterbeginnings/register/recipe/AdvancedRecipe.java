@@ -217,6 +217,11 @@ public class AdvancedRecipe
 	{
 		return addedMaterials;
 	}
+	
+	public OreRecipeElement[] getRecipeItems() 
+	{
+		return recipeItems;
+	}
 
 	public ItemStack getCraftingResult(InventoryCrafting crafting)
 	{

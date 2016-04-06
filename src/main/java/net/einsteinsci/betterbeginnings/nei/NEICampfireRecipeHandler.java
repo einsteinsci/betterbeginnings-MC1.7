@@ -8,6 +8,7 @@ import net.einsteinsci.betterbeginnings.gui.GuiCampfire;
 import net.einsteinsci.betterbeginnings.register.RegisterItems;
 import net.einsteinsci.betterbeginnings.register.recipe.CampfirePanRecipes;
 import net.einsteinsci.betterbeginnings.register.recipe.CampfireRecipes;
+import net.einsteinsci.betterbeginnings.register.recipe.OreRecipeElement;
 import net.einsteinsci.betterbeginnings.tileentity.TileEntityCampfire;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
@@ -113,7 +114,7 @@ public class NEICampfireRecipeHandler extends TemplateRecipeHandler
 		{
 			Map.Entry entry = (Map.Entry)obj;
 
-			ItemStack inp = (ItemStack)entry.getKey();
+			ItemStack inp = (ItemStack)((OreRecipeElement) entry.getKey()).getFirst();
 			ItemStack outp = (ItemStack)entry.getValue();
 
 			if (outp.getItem() == result.getItem() &&
@@ -128,7 +129,7 @@ public class NEICampfireRecipeHandler extends TemplateRecipeHandler
 		{
 			Map.Entry entry = (Map.Entry)obj;
 
-			ItemStack inp = (ItemStack)entry.getKey();
+			ItemStack inp = (ItemStack)((OreRecipeElement) entry.getKey()).getFirst();
 			ItemStack outp = (ItemStack)entry.getValue();
 
 			if (outp.getItem() == result.getItem() &&
@@ -147,7 +148,7 @@ public class NEICampfireRecipeHandler extends TemplateRecipeHandler
 		{
 			Map.Entry entry = (Map.Entry)obj;
 
-			ItemStack inp = (ItemStack)entry.getKey();
+			ItemStack inp = (ItemStack)((OreRecipeElement) entry.getKey()).getFirst();
 			ItemStack outp = (ItemStack)entry.getValue();
 
 			if (inp.getItem() == ingredient.getItem() &&
@@ -162,7 +163,7 @@ public class NEICampfireRecipeHandler extends TemplateRecipeHandler
 		{
 			Map.Entry entry = (Map.Entry)obj;
 
-			ItemStack inp = (ItemStack)entry.getKey();
+			ItemStack inp = (ItemStack)((OreRecipeElement) entry.getKey()).getFirst();
 			ItemStack outp = (ItemStack)entry.getValue();
 
 			if (inp.getItem() == ingredient.getItem() &&
