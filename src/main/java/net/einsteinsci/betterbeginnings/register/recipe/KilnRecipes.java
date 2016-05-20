@@ -60,13 +60,6 @@ public class KilnRecipes
 		smelting().putLists(new OreRecipeElement(input), output, experience);
 	}
 
-	public static void removeRecipe(ItemStack input)
-	{
-		smelting().smeltingList.remove(input);
-		smelting().experienceList.remove(input);
-		
-	}
-
 	public ItemStack getSmeltingResult(ItemStack stack)
 	{
 		Iterator<Entry<OreRecipeElement, ItemStack>> iterator = smeltingList.entrySet().iterator();

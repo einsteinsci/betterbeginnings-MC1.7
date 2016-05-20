@@ -5,17 +5,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.lwjgl.Sys;
-
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.minecraft.MineTweakerMC;
 import minetweaker.api.oredict.IOreDictEntry;
-import net.einsteinsci.betterbeginnings.minetweaker.util.CampfireRecipeWrapper;
 import net.einsteinsci.betterbeginnings.minetweaker.util.KilnRecipeWrapper;
-import net.einsteinsci.betterbeginnings.register.recipe.CampfirePanRecipes;
 import net.einsteinsci.betterbeginnings.register.recipe.CampfireRecipes;
 import net.einsteinsci.betterbeginnings.register.recipe.KilnRecipes;
 import net.einsteinsci.betterbeginnings.register.recipe.OreRecipeElement;
@@ -55,6 +51,7 @@ public class KilnTweaker
 		private IIngredient input;
 		private ItemStack output;
 		private float xp;
+		private OreRecipeElement inputAsORE;
 		
 		public AddKilnRecipe(IIngredient input, IItemStack output, float xp) 
 		{
@@ -66,11 +63,18 @@ public class KilnTweaker
 		@Override
 		public void apply() 
 		{
-			for(IItemStack inputStack : input.getItems())
+			if(input instanceof IOreDictEntry)
 			{
-				KilnRecipes.addRecipe(MineTweakerMC.getItemStack(input), output, xp);
+				inputAsORE = new OreRecipeElement(((IOreDictEntry) input).getName(), 1);
+				KilnRecipes.getSmeltingList().put(inputAsORE, output);
+				KilnRecipes.getXPList().put(output, xp);
 			}
-			
+			else
+			{
+				inputAsORE = new OreRecipeElement(MineTweakerMC.getItemStack(input));
+				KilnRecipes.getSmeltingList().put(inputAsORE, output);
+				KilnRecipes.getXPList().put(output, xp);
+			}
 		}
 
 		@Override
@@ -82,7 +86,8 @@ public class KilnTweaker
 		@Override
 		public void undo() 
 		{
-				KilnRecipes.removeRecipe(MineTweakerMC.getItemStack(input));
+			KilnRecipes.getSmeltingList().remove(inputAsORE);
+			KilnRecipes.getXPList().remove(output);
 		}
 
 		@Override
@@ -114,6 +119,7 @@ public class KilnTweaker
 		private IIngredient input;
 		private ItemStack output;
 		private float xp;
+		private OreRecipeElement inputAsORE;
 
 		public RemoveKilnRecipe(IIngredient input, IItemStack output) 
 		{
@@ -125,9 +131,14 @@ public class KilnTweaker
 		@Override
 		public void apply() 
 		{
-			for(IItemStack inputStack : input.getItems())
+			ItemStack inputAsStack = MineTweakerMC.getItemStack(input);
+			for (Iterator<OreRecipeElement> recipeIter = KilnRecipes.getSmeltingList().keySet().iterator(); recipeIter.hasNext();) 
 			{
-				KilnRecipes.removeRecipe(MineTweakerMC.getItemStack(inputStack));
+				if(recipeIter.next().matches(inputAsStack))
+				{
+					recipeIter.remove();
+					KilnRecipes.getXPList().remove(output);
+				}
 			}
 		}
 
@@ -140,10 +151,18 @@ public class KilnTweaker
 		@Override
 		public void undo() 
 		{
-			for(IItemStack inputStack : input.getItems())
+			if(input instanceof IOreDictEntry)
 			{
-				KilnRecipes.addRecipe(MineTweakerMC.getItemStack(inputStack), output, xp);
-			}	
+				inputAsORE = new OreRecipeElement(((IOreDictEntry) input).getName(), 1);
+				KilnRecipes.getSmeltingList().put(inputAsORE, output);
+				KilnRecipes.getXPList().put(output, xp);
+			}
+			else
+			{
+				inputAsORE = new OreRecipeElement(MineTweakerMC.getItemStack(input));
+				KilnRecipes.getSmeltingList().put(inputAsORE, output);
+				KilnRecipes.getXPList().put(output, xp);
+			}
 		}
 
 		@Override

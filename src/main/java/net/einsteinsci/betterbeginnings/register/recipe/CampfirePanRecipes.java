@@ -57,12 +57,6 @@ public class CampfirePanRecipes
 	{
 		smelting().putLists(new OreRecipeElement(input), output, experience);
 	}
-	
-	public static void removeRecipe(ItemStack input)
-	{
-		smelting().smeltingList.remove(input);
-		smelting().experienceList.remove(input);
-	}
 
 	public ItemStack getSmeltingResult(ItemStack stack)
 	{

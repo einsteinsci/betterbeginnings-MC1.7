@@ -44,7 +44,6 @@ public class CampfireRecipeWrapper
 
 	public void add() 
 	{
-		System.out.println(isPanRecipe());
 		if(isPanRecipe())
 		{
 			CampfirePanRecipes.smelting().putLists(input, output, xp);

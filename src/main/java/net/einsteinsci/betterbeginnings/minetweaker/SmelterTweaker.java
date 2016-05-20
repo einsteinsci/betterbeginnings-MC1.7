@@ -1,7 +1,7 @@
 package net.einsteinsci.betterbeginnings.minetweaker;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
@@ -9,17 +9,12 @@ import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.minecraft.MineTweakerMC;
 import minetweaker.api.oredict.IOreDictEntry;
+import net.einsteinsci.betterbeginnings.register.recipe.OreRecipeElement;
 import net.einsteinsci.betterbeginnings.register.recipe.SmelterRecipe;
 import net.einsteinsci.betterbeginnings.register.recipe.SmelterRecipeHandler;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-
-import com.google.common.collect.Maps;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 @ZenClass("mods.betterbeginnings.Smelter")
 public class SmelterTweaker 
@@ -54,6 +49,7 @@ public class SmelterTweaker
 		private ItemStack output;
 		private float xp, bonusChance;
 		private int gravel, bonus;
+		private SmelterRecipe recipe;
 
 		public AddSmelterRecipe(IIngredient input, IItemStack output, float xp, int gravel, int bonus, float bonusChance) 
 		{
@@ -68,10 +64,16 @@ public class SmelterTweaker
 		@Override
 		public void apply() 
 		{
-			for(IItemStack inputStack : input.getItems())
+			if(input instanceof IOreDictEntry)
 			{
-				SmelterRecipeHandler.addRecipe(MineTweakerMC.getItemStack(inputStack), output, xp, gravel, bonus, bonusChance);
+				recipe = new SmelterRecipe(output, new OreRecipeElement(((IOreDictEntry) input).getName(), 1), xp, gravel, bonus, bonusChance);
+				SmelterRecipeHandler.getRecipes().add(recipe);
 			}
+			else if(input instanceof IIngredient)
+			{
+				recipe = new SmelterRecipe(output, new OreRecipeElement(MineTweakerMC.getItemStack(input)), xp, gravel, bonus, bonusChance);
+				SmelterRecipeHandler.getRecipes().add(recipe);
+			}	
 		}
 
 		@Override
@@ -83,10 +85,7 @@ public class SmelterTweaker
 		@Override
 		public void undo() 
 		{
-			for(IItemStack inputStack : input.getItems())
-			{
-				SmelterRecipeHandler.removeRecipe(MineTweakerMC.getItemStack(input), output);
-			}
+			SmelterRecipeHandler.getRecipes().remove(recipe);
 		}
 
 		@Override
@@ -123,22 +122,35 @@ public class SmelterTweaker
 		{
 			this.input = input;
 			this.output = MineTweakerMC.getItemStack(output);
-			for(SmelterRecipe r : SmelterRecipeHandler.getRecipes())
+
+			if(input instanceof IOreDictEntry)
 			{
-				if(ItemStack.areItemStacksEqual(r.getInput(), MineTweakerMC.getItemStack(input)))
+				for(SmelterRecipe r : SmelterRecipeHandler.getRecipes())
 				{
-					this.recipe = r;
+					if(ItemStack.areItemStacksEqual(r.getOutput(), this.output))
+					{
+						this.recipe = r;
+					}
 				}
 			}
+			else if(input instanceof IIngredient)
+			{
+				for(SmelterRecipe r : SmelterRecipeHandler.getRecipes())
+				{
+					if(r.getInput().matches(MineTweakerMC.getItemStack(input)) && ItemStack.areItemStacksEqual(r.getOutput(), this.output));
+					{
+						this.recipe = r;
+					}
+				}
+			}	
+			
 		}
 
 		@Override
 		public void apply() 
 		{
-			for(IItemStack inputStack : input.getItems())
-			{
-				SmelterRecipeHandler.removeRecipe(MineTweakerMC.getItemStack(inputStack), output);
-			}
+			System.out.println(recipe);
+			SmelterRecipeHandler.getRecipes().remove(recipe);
 		}
 
 		@Override
@@ -150,12 +162,7 @@ public class SmelterTweaker
 		@Override
 		public void undo() 
 		{
-			for(IItemStack stack : input.getItems())
-			{
-				ItemStack inputStack = MineTweakerMC.getItemStack(stack);
-				SmelterRecipeHandler.addRecipe(inputStack, output, recipe.getExperience()
-						, recipe.getGravel(), recipe.getBonus(), recipe.getBonusChance());
-			}
+			SmelterRecipeHandler.getRecipes().add(recipe);
 		}
 
 		@Override
@@ -170,7 +177,6 @@ public class SmelterTweaker
 		public String describeUndo() 
 		{
 			String inputIDString = (input instanceof IOreDictEntry) ? ((IOreDictEntry) input).getName() : MineTweakerMC.getItemStack(input).getDisplayName();
-			ItemStack inputStack = MineTweakerMC.getItemStack(input);
 			return "Adding recipe " + inputIDString
 					+ " -> " + output.getDisplayName() + " * "  + output.stackSize + " to Smelter";
 		}
@@ -186,7 +192,7 @@ public class SmelterTweaker
 	private static class RemoveSmelterOutput implements IUndoableAction
 	{
 		private ItemStack output;
-		private Map<SmelterRecipe, Float> removedRecipes = Maps.newHashMap();
+		private ArrayList<SmelterRecipe> removedRecipes;
 
 		public RemoveSmelterOutput(IItemStack output) 
 		{
@@ -195,7 +201,16 @@ public class SmelterTweaker
 
 		public void apply() 
 		{
-			removedRecipes = SmelterRecipeHandler.removeOutput(output);
+			removedRecipes = new ArrayList<SmelterRecipe>();;
+			for (Iterator<SmelterRecipe> recipeIter = SmelterRecipeHandler.getRecipes().iterator(); recipeIter.hasNext();)
+			{
+				SmelterRecipe recipe = recipeIter.next();
+				if(ItemStack.areItemStacksEqual(recipe.getOutput(), output))
+				{
+					removedRecipes.add(recipe);
+					recipeIter.remove();
+				}
+			}
 		}
 
 		@Override
@@ -207,10 +222,9 @@ public class SmelterTweaker
 		@Override
 		public void undo() 
 		{
-			for(Iterator<SmelterRecipe> iter = removedRecipes.keySet().iterator(); iter.hasNext();)
+			for(SmelterRecipe recipe : removedRecipes)
 			{
-				SmelterRecipe recipe = iter.next();
-				SmelterRecipeHandler.addRecipe(recipe, removedRecipes.get(recipe.getInput()));
+				SmelterRecipeHandler.getRecipes().add(recipe);
 			}
 		}
 

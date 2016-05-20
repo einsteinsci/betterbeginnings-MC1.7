@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import cpw.mods.fml.common.FMLLog;
 import net.einsteinsci.betterbeginnings.tileentity.TileEntityBrickOven;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -137,15 +138,19 @@ public class BrickOvenRecipeHandler
 			{
 				arraylist.add(new OreRecipeElement(new ItemStack((Item)object1)));
 			}
-			else if (!(object1 instanceof Block) || !(object1 instanceof OreRecipeElement))
+			else if (object1 instanceof Block)
 			{
 				arraylist.add(new OreRecipeElement(new ItemStack((Block)object1)));
+			}
+			else if(object1 instanceof OreRecipeElement)
+			{
+				arraylist.add((OreRecipeElement) object1);
 			}
 			else
 			{
 				if (!(object1 instanceof OreRecipeElement))
-				{
-					throw new RuntimeException("Invalid shapeless recipe!");
+				{	
+					FMLLog.warning("Invalid shapeless recipe!");
 				}
 				arraylist.add((OreRecipeElement) object1);
 			}

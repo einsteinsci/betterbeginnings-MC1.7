@@ -30,7 +30,7 @@ public class SmelterRecipeHandler
 
 	public void addLists(Item input, ItemStack output, float experience, int gravel, int bonus, float chance)
 	{
-		putLists(new ItemStack(input, 1, OreDictionary.WILDCARD_VALUE), output, experience, gravel, bonus, chance);
+		putLists(new OreRecipeElement(new ItemStack(input)), output, experience, gravel, bonus, chance);
 	}
 
 	public static SmelterRecipeHandler smelting()
@@ -38,7 +38,7 @@ public class SmelterRecipeHandler
 		return SMELTINGBASE;
 	}
 
-	public void putLists(ItemStack input, ItemStack output, float experience, int gravel, int bonus, float chance)
+	public void putLists(OreRecipeElement input, ItemStack output, float experience, int gravel, int bonus, float chance)
 	{
 		experienceList.put(output, Float.valueOf(experience));
 
@@ -52,15 +52,12 @@ public class SmelterRecipeHandler
 
 	public static void addRecipe(ItemStack input, ItemStack output, float experience, int gravel, int bonus, float chance)
 	{
-		smelting().putLists(input, output, experience, gravel, bonus, chance);
+		smelting().putLists(new OreRecipeElement(input), output, experience, gravel, bonus, chance);
 	}
 
 	public static void addRecipe(String oreDict, ItemStack output, float experience, int gravel, int bonus, float chance)
 	{
-		for(ItemStack ore : OreDictionary.getOres(oreDict, false))
-		{
-			addRecipe(ore, output, experience, gravel, bonus, chance);
-		}
+		smelting().putLists(new OreRecipeElement(oreDict, 1), output, experience, gravel, bonus, chance);
 	}
 	
 	public static void addRecipe(SmelterRecipe recipe, float experience)
@@ -69,41 +66,11 @@ public class SmelterRecipeHandler
 		smelting().experienceList.put(recipe.getInput(), experience);
 	}
 
-	public static void removeRecipe(ItemStack input, ItemStack output)
-	{
-		for(Iterator<SmelterRecipe> iter = SmelterRecipeHandler.getRecipes().iterator(); iter.hasNext();)
-		{
-			SmelterRecipe recipe = iter.next();
-			if(ItemStack.areItemStacksEqual(recipe.getInput(), input))
-			{
-				iter.remove();
-				smelting().experienceList.remove(input);
-				break;
-			}
-		}
-	}
-	
-	public static Map<SmelterRecipe, Float> removeOutput(ItemStack output)
-	{
-		Map<SmelterRecipe, Float> removedRecipes = Maps.newHashMap();
-		for(Iterator<SmelterRecipe> iter = SmelterRecipeHandler.getRecipes().iterator(); iter.hasNext();)
-		{
-			SmelterRecipe recipe = iter.next();
-			if(ItemStack.areItemStacksEqual(recipe.getOutput(), output))
-			{
-				removedRecipes.put(recipe, smelting().giveExperience(recipe.getInput()));
-				iter.remove();
-				smelting().experienceList.remove(output);
-			}
-		}
-		return removedRecipes;
-	}
-
 	public ItemStack getSmeltingResult(ItemStack input)
 	{
 		for (SmelterRecipe recipe : recipes)
 		{
-			if (recipe.getInput().getItem() == input.getItem())
+			if (recipe.getInput().matches(input))
 			{
 				return recipe.getOutput();
 			}
@@ -118,7 +85,7 @@ public class SmelterRecipeHandler
 		{
 			if (recipe.getInput() != null)
 			{
-				if (recipe.getInput().getItem() == stack.getItem())
+				if (recipe.getInput().matches(stack))
 				{
 					return recipe.getGravel();
 				}
@@ -162,7 +129,7 @@ public class SmelterRecipeHandler
 	{
 		for (SmelterRecipe recipe : recipes)
 		{
-			if (recipe.getInput().getItem() == input.getItem())
+			if (recipe.getInput().matches(input))
 			{
 				return recipe.getBonus();
 			}
@@ -175,7 +142,7 @@ public class SmelterRecipeHandler
 	{
 		for (SmelterRecipe recipe : recipes)
 		{
-			if (recipe.getInput().getItem() == input.getItem())
+			if (recipe.getInput().matches(input))
 			{
 				return recipe.getBonusChance();
 			}

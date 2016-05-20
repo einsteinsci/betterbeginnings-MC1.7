@@ -84,7 +84,7 @@ public class OvenTweaker
 	private static OreRecipeElement[] convertShapelessIngredients(IIngredient[] inputs)
 	{	
 		OreRecipeElement[] convertedIngredients = new OreRecipeElement[inputs.length];
-		for(int i = 0; i < inputs.length - 1; i++)
+		for(int i = 0; i < inputs.length; i++)
 		{
 			IIngredient ingredient = inputs[i];
 			if(ingredient instanceof IOreDictEntry)
@@ -110,7 +110,7 @@ public class OvenTweaker
 				OreRecipeElement ore = ingredients[row][col];
 				if(ore != null)
 				{
-					if(ore.getOreDictionaryEntry() != "")
+					if(ore.getOreDictionaryEntry().equals(""))
 					{
 						sb.append(ore.getOreDictionaryEntry() + ", ");
 					}
@@ -121,7 +121,6 @@ public class OvenTweaker
 				}
 			}
 		}
-		sb.deleteCharAt(sb.lastIndexOf(","));
 		sb.append("] -> " + output.getDisplayName() + " x" + output.stackSize + (add ? " to Oven" : "from Oven"));
 		return sb.toString();
 	}
@@ -133,7 +132,7 @@ public class OvenTweaker
 		{
 			if(ore != null)
 			{
-				if(ore.getOreDictionaryEntry() != "")
+				if(ore.getOreDictionaryEntry().equals(""))
 				{
 					sb.append(ore.getOreDictionaryEntry() + ", ");
 				}
@@ -142,10 +141,8 @@ public class OvenTweaker
 					sb.append(ore.getFirst().getDisplayName() + ", ");
 				}
 			}
-			sb.deleteCharAt(sb.lastIndexOf(","));
-			sb.append("] -> " + output.getDisplayName() + " x" + output.stackSize + (add ? " to Oven" : "from Oven"));
-
 		}
+		sb.append("] -> " + output.getDisplayName() + " x" + output.stackSize + (add ? " to Oven" : "from Oven"));
 		return sb.toString();
 	}
 
@@ -244,6 +241,7 @@ public class OvenTweaker
 							break recipes;
 						}
 					}
+					this.recipe = (BrickOvenShapedRecipe) recipe;
 					iter.remove();
 				}
 		}
@@ -257,7 +255,6 @@ public class OvenTweaker
 		@Override
 		public void undo() 
 		{
-			recipe = OvenTweaker.constructShapedRecipe(ingredients, output);
 			BrickOvenRecipeHandler.getRecipeList().add(recipe);
 		}
 

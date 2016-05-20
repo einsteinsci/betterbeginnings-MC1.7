@@ -97,7 +97,7 @@ public class AdvancedCraftingTweaker
 				OreRecipeElement ore = ingredients[row][col];
 				if(ore != null)
 				{
-					if(ore.getOreDictionaryEntry() != "")
+					if(ore.getOreDictionaryEntry().equals(""))
 					{
 						sb.append(ore.getOreDictionaryEntry() + ", ");
 					}
@@ -115,7 +115,7 @@ public class AdvancedCraftingTweaker
 			OreRecipeElement ore = catalysts[i];
 			if(ore != null)
 			{
-				if(ore.getOreDictionaryEntry() != "")
+				if(ore.getOreDictionaryEntry().equals(""))
 				{
 					sb.append(ore.getOreDictionaryEntry() + ", ");
 				}

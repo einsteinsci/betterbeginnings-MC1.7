@@ -120,10 +120,4 @@ public class CampfireRecipes
 	{
 		return smelting().experienceList;
 	}
-
-	public static void removeRecipe(ItemStack input)
-	{
-		smelting().smeltingList.remove(input);
-		smelting().experienceList.remove(input);
-	}
 }

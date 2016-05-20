@@ -91,7 +91,7 @@ public class CampfireTweaker
 					CampfirePanRecipes.getSmeltingList().put(inputAsORE, output);
 					CampfirePanRecipes.getXPList().put(output, xp);
 				}
-				else
+				else if(input instanceof IIngredient)
 				{
 					inputAsORE = new OreRecipeElement(MineTweakerMC.getItemStack(input));
 					CampfirePanRecipes.getSmeltingList().put(inputAsORE, output);
@@ -106,7 +106,7 @@ public class CampfireTweaker
 					CampfireRecipes.getSmeltingList().put(inputAsORE, output);
 					CampfireRecipes.getXPList().put(output, xp);
 				}
-				else
+				else if(input instanceof IIngredient)
 				{
 					inputAsORE = new OreRecipeElement(MineTweakerMC.getItemStack(input));
 					CampfireRecipes.getSmeltingList().put(inputAsORE, output);
@@ -166,6 +166,7 @@ public class CampfireTweaker
 		private ItemStack output;
 		private float xp;
 		private boolean isPanRecipe;
+		private OreRecipeElement removedORE;
 
 		public RemoveCampfireRecipe(IIngredient input, IItemStack output, boolean isPanRecipe) 
 		{
@@ -182,7 +183,8 @@ public class CampfireTweaker
 			for (Iterator<OreRecipeElement> recipeIter = isPanRecipe ? CampfirePanRecipes.getSmeltingList().keySet().iterator() 
 					: CampfireRecipes.getSmeltingList().keySet().iterator(); recipeIter.hasNext();) 
 			{
-				if(recipeIter.next().matches(inputAsStack))
+				removedORE = recipeIter.next();
+				if(removedORE.matches(inputAsStack))
 				{
 					recipeIter.remove();
 					if(isPanRecipe) 
@@ -208,11 +210,13 @@ public class CampfireTweaker
 		{
 			if (isPanRecipe)  
 			{
-				CampfirePanRecipes.addRecipe(MineTweakerMC.getItemStack(input), output, xp);
+				CampfirePanRecipes.getSmeltingList().put(removedORE, output);
+				CampfirePanRecipes.getXPList().put(output, xp);
 			}
 			else
 			{
-				CampfireRecipes.addRecipe(MineTweakerMC.getItemStack(input), output, xp);
+				CampfireRecipes.getSmeltingList().put(removedORE, output);
+				CampfireRecipes.getXPList().put(output, xp);
 			}
 		}
 
