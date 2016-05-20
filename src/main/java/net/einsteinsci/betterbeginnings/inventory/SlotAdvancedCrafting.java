@@ -16,7 +16,6 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
 public class SlotAdvancedCrafting extends Slot
 {
-	private static final String __OBFID = "CL_00001761";
 	/**
 	 * The craft matrix inventory linked to this result slot.
 	 */
@@ -157,12 +156,18 @@ public class SlotAdvancedCrafting extends Slot
 						if (isDamageable && containerStack.getItemDamage() > containerStack.getMaxDamage())
 						{
 							MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(thePlayer, containerStack));
-							continue;
 						}
+						else
+						{
+							craftMatrix.setInventorySlotContents(i, containerStack);
+						}
+						continue;
 					}
 
+					boolean leavesGrid = ingredientStack.getItem().doesContainerItemLeaveCraftingGrid(ingredientStack);
+					boolean addedToInventory = thePlayer.inventory.addItemStackToInventory(containerStack);
 					if (!ingredientStack.getItem().doesContainerItemLeaveCraftingGrid(ingredientStack)
-							|| !thePlayer.inventory.addItemStackToInventory(containerStack))
+							|| !addedToInventory)
 					{
 						if (craftMatrix.getStackInSlot(i) == null)
 						{

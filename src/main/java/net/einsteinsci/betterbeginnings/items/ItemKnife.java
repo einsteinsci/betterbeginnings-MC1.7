@@ -1,6 +1,5 @@
 package net.einsteinsci.betterbeginnings.items;
 
-import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
