@@ -41,7 +41,7 @@ public class NEIBrickOvenRecipeHandler extends TemplateRecipeHandler
 				BrickOvenShapedRecipe shaped = (BrickOvenShapedRecipe)ibr;
 
 				output = new PositionedStack(shaped.getRecipeOutput(), 119, 10);
-				ItemStack[] grid = shaped.getThreeByThree();
+				OreRecipeElement[] grid = shaped.getThreeByThree();
 				for (int y = 0; y < 3; y++)
 				{
 					for (int x = 0; x < 3; x++)
@@ -52,8 +52,7 @@ public class NEIBrickOvenRecipeHandler extends TemplateRecipeHandler
 						{
 							continue;
 						}
-
-						inputs[i] = new PositionedStack(grid[i], 25 + x * 18, 6 + y * 18);
+						inputs[i] = new PositionedStack(grid[i].getValidItems(), 25 + x * 18, 6 + y * 18);
 					}
 				}
 			}
@@ -74,7 +73,7 @@ public class NEIBrickOvenRecipeHandler extends TemplateRecipeHandler
 							continue;
 						}
 
-						inputs[i] = new PositionedStack(stacks[i].getFirst(), 25 + x * 18, 6 + y * 18);
+						inputs[i] = new PositionedStack(stacks[i].getValidItems(), 25 + x * 18, 6 + y * 18);
 					}
 				}
 			}

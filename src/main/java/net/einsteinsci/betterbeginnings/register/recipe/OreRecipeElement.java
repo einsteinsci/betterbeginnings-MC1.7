@@ -6,6 +6,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 /**
  * Created by einsteinsci on 11/18/2014.
  */
@@ -14,6 +16,8 @@ public class OreRecipeElement
 	public int stackSize;
 	ItemStack stack;
 	String oreDictionaryEntry;
+	
+	private ItemStack[] EMPTY_ISTACK_ARRAY = new ItemStack[0];
 
 	public OreRecipeElement(ItemStack stack)
 	{
@@ -102,18 +106,19 @@ public class OreRecipeElement
 		return false;
 	}
 
-	public List<ItemStack> getValidItems()
+	public ItemStack[] getValidItems()
 	{
 		List<ItemStack> buf = new ArrayList<ItemStack>();
 		if(stack != null)
 		{
 			buf.add(stack);
 		}
-		if(oreDictionaryEntry.equals(""))
+		if(!oreDictionaryEntry.equals(""))
 		{
 			buf.addAll(OreDictionary.getOres(oreDictionaryEntry));
 		}
-		return buf;
+		System.out.println(buf);
+		return buf.toArray(EMPTY_ISTACK_ARRAY);
 	}
 
 	public String getOreDictionaryEntry()

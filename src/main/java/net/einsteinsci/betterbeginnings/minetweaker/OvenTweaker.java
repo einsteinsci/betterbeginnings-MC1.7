@@ -110,7 +110,7 @@ public class OvenTweaker
 				OreRecipeElement ore = ingredients[row][col];
 				if(ore != null)
 				{
-					if(ore.getOreDictionaryEntry().equals(""))
+					if(!ore.getOreDictionaryEntry().equals(""))
 					{
 						sb.append(ore.getOreDictionaryEntry() + ", ");
 					}
@@ -132,7 +132,7 @@ public class OvenTweaker
 		{
 			if(ore != null)
 			{
-				if(ore.getOreDictionaryEntry().equals(""))
+				if(!ore.getOreDictionaryEntry().equals(""))
 				{
 					sb.append(ore.getOreDictionaryEntry() + ", ");
 				}

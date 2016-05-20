@@ -274,9 +274,9 @@ public class BrickOvenShapedRecipe implements IBrickOvenRecipe
 		return buf.toArray(new OreRecipeElement[0]);
 	}
 
-	public ItemStack[] getThreeByThree()
+	public OreRecipeElement[] getThreeByThree()
 	{
-		ItemStack[] res = new ItemStack[9];
+		OreRecipeElement[] res = new OreRecipeElement[9];
 
 		int y = 0, x = 0;
 		int v = 0, u = 0;
@@ -288,7 +288,7 @@ public class BrickOvenShapedRecipe implements IBrickOvenRecipe
 			}
 			else
 			{
-				res[x + y * 3] = ((OreRecipeElement) recipeItems[u + v * recipeWidth]).getFirst();
+				res[x + y * 3] = recipeItems[u + v * recipeWidth];
 			}
 			u++;
 			if (u >= recipeWidth)
