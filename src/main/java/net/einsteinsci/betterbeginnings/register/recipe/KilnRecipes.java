@@ -73,9 +73,14 @@ public class KilnRecipes
 			}
 
 			entry = iterator.next();
-		} while (!canBeSmelted(stack, entry.getKey().getFirst()));
+		} while (!canBeSmelted(stack, entry.getKey()));
 
 		return entry.getValue();
+	}
+	
+	private boolean canBeSmelted(ItemStack stack, OreRecipeElement oreRecipeElement)
+	{
+		return oreRecipeElement.matches(stack);
 	}
 
 	private boolean canBeSmelted(ItemStack stack, ItemStack stack2)

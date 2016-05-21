@@ -92,14 +92,11 @@ public class OreRecipeElement
 				if (input1.stack.getItem() == input2.stack.getItem() && (input1.stack.getItemDamage() == input2.stack.getItemDamage() 
 					|| input1.stack.getItemDamage() == OreDictionary.WILDCARD_VALUE || input2.stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) && input1.oreDictionaryEntry.equals(input2.oreDictionaryEntry))
 				{
-					System.out.println("WAT?");
 					return true;
 				}
 			}
 			else if(input1.oreDictionaryEntry.equals(input2.oreDictionaryEntry))
 			{
-				System.out.println(input1.oreDictionaryEntry);
-				System.out.println(input2.oreDictionaryEntry);
 				return true;
 			}	
 		}
@@ -117,7 +114,6 @@ public class OreRecipeElement
 		{
 			buf.addAll(OreDictionary.getOres(oreDictionaryEntry));
 		}
-		System.out.println(buf);
 		return buf.toArray(EMPTY_ISTACK_ARRAY);
 	}
 
