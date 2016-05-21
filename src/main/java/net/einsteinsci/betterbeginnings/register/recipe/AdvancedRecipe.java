@@ -217,6 +217,11 @@ public class AdvancedRecipe
 	{
 		return addedMaterials;
 	}
+	
+	public OreRecipeElement[] getRecipeItems() 
+	{
+		return recipeItems;
+	}
 
 	public ItemStack getCraftingResult(InventoryCrafting crafting)
 	{
@@ -248,9 +253,9 @@ public class AdvancedRecipe
 		return recipeWidth * recipeHeight;
 	}
 
-	public ItemStack[] getThreeByThree()
+	public OreRecipeElement[] getThreeByThree()
 	{
-		ItemStack[] res = new ItemStack[9];
+		OreRecipeElement[] res = new OreRecipeElement[9];
 
 		int y = 0, x = 0;
 		int v = 0, u = 0;
@@ -260,7 +265,7 @@ public class AdvancedRecipe
 
 			if (ore != null)
 			{
-				res[x + y * 3] = ore.getFirst();
+				res[x + y * 3] = ore;
 			}
 
 			u++;

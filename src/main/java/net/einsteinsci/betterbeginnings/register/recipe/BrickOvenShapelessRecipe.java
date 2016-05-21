@@ -12,13 +12,13 @@ public class BrickOvenShapelessRecipe implements IBrickOvenRecipe
 	/**
 	 * Is a List of ItemStack that composes the recipe.
 	 */
-	public final List<ItemStack> recipeItems;
+	public final List<OreRecipeElement> recipeItems;
 	/**
 	 * Is the ItemStack that you get when craft the recipe.
 	 */
 	private final ItemStack recipeOutput;
 
-	public BrickOvenShapelessRecipe(ItemStack output, List<ItemStack> input)
+	public BrickOvenShapelessRecipe(ItemStack output, List<OreRecipeElement> input)
 	{
 		recipeOutput = output;
 		recipeItems = input;
@@ -30,7 +30,7 @@ public class BrickOvenShapelessRecipe implements IBrickOvenRecipe
 	@Override
 	public boolean matches(TileEntityBrickOven oven)
 	{
-		ArrayList<ItemStack> arraylist = new ArrayList<ItemStack>(recipeItems);
+		ArrayList<OreRecipeElement> arraylist = new ArrayList<OreRecipeElement>(recipeItems);
 
 		for (int col = 0; col < 3; ++col)
 		{
@@ -45,12 +45,9 @@ public class BrickOvenShapelessRecipe implements IBrickOvenRecipe
 
 					while (iterator.hasNext())
 					{
-						ItemStack itemstack1 = (ItemStack)iterator.next();
+						OreRecipeElement itemstack1 = (OreRecipeElement)iterator.next();
 
-						if (itemstack.getItem() == itemstack1.getItem() &&
-								(itemstack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || itemstack
-										.getItemDamage() == itemstack1
-										.getItemDamage()))
+						if (itemstack1 != null && itemstack1.matches(itemstack))
 						{
 							flag = true;
 							arraylist.remove(itemstack1);
@@ -72,7 +69,7 @@ public class BrickOvenShapelessRecipe implements IBrickOvenRecipe
 	@Override
 	public boolean matches(TileEntityNetherBrickOven oven)
 	{
-		ArrayList<ItemStack> arraylist = new ArrayList<ItemStack>(recipeItems);
+		ArrayList<OreRecipeElement> arraylist = new ArrayList<OreRecipeElement>(recipeItems);
 
 		for (int col = 0; col < 3; ++col)
 		{
@@ -87,12 +84,9 @@ public class BrickOvenShapelessRecipe implements IBrickOvenRecipe
 
 					while (iterator.hasNext())
 					{
-						ItemStack itemstack1 = (ItemStack)iterator.next();
+						OreRecipeElement itemstack1 = (OreRecipeElement)iterator.next();
 
-						if (itemstack.getItem() == itemstack1.getItem() &&
-								(itemstack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || itemstack
-										.getItemDamage() == itemstack1
-										.getItemDamage()))
+						if (itemstack1.matches(itemstack))
 						{
 							flag = true;
 							arraylist.remove(itemstack1);
@@ -138,9 +132,9 @@ public class BrickOvenShapelessRecipe implements IBrickOvenRecipe
 	@Override
 	public boolean contains(ItemStack stack)
 	{
-		for (ItemStack s : recipeItems)
+		for (OreRecipeElement ore : recipeItems)
 		{
-			if (s.getItem() == stack.getItem())
+			if (ore.matches(stack))
 			{
 				return true;
 			}
@@ -155,14 +149,17 @@ public class BrickOvenShapelessRecipe implements IBrickOvenRecipe
 	}
 
 	@Override
-	public ItemStack[] getInputs()
+	public OreRecipeElement[] getInputs()
 	{
-		ItemStack[] res = new ItemStack[9];
-		for (int i = 0; i < recipeItems.size(); i++)
+		List<OreRecipeElement> buf = new ArrayList<>();
+		for (OreRecipeElement ore : recipeItems)
 		{
-			res[i] = recipeItems.get(i);
+			if (ore != null)
+			{
+				buf.add(ore);
+			}
 		}
 
-		return res;
+		return buf.toArray(new OreRecipeElement[0]);
 	}
 }

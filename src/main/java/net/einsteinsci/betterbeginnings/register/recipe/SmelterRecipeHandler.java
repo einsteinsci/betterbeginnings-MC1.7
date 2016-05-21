@@ -8,6 +8,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.*;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Maps;
+
 public class SmelterRecipeHandler
 {
 	private static final SmelterRecipeHandler SMELTINGBASE = new SmelterRecipeHandler();
@@ -28,7 +30,7 @@ public class SmelterRecipeHandler
 
 	public void addLists(Item input, ItemStack output, float experience, int gravel, int bonus, float chance)
 	{
-		putLists(new ItemStack(input, 1, OreDictionary.WILDCARD_VALUE), output, experience, gravel, bonus, chance);
+		putLists(new OreRecipeElement(new ItemStack(input)), output, experience, gravel, bonus, chance);
 	}
 
 	public static SmelterRecipeHandler smelting()
@@ -36,7 +38,7 @@ public class SmelterRecipeHandler
 		return SMELTINGBASE;
 	}
 
-	public void putLists(ItemStack input, ItemStack output, float experience, int gravel, int bonus, float chance)
+	public void putLists(OreRecipeElement input, ItemStack output, float experience, int gravel, int bonus, float chance)
 	{
 		experienceList.put(output, Float.valueOf(experience));
 
@@ -50,14 +52,25 @@ public class SmelterRecipeHandler
 
 	public static void addRecipe(ItemStack input, ItemStack output, float experience, int gravel, int bonus, float chance)
 	{
-		smelting().putLists(input, output, experience, gravel, bonus, chance);
+		smelting().putLists(new OreRecipeElement(input), output, experience, gravel, bonus, chance);
+	}
+
+	public static void addRecipe(String oreDict, ItemStack output, float experience, int gravel, int bonus, float chance)
+	{
+		smelting().putLists(new OreRecipeElement(oreDict, 1), output, experience, gravel, bonus, chance);
+	}
+	
+	public static void addRecipe(SmelterRecipe recipe, float experience)
+	{
+		smelting().recipes.add(recipe);
+		smelting().experienceList.put(recipe.getInput(), experience);
 	}
 
 	public ItemStack getSmeltingResult(ItemStack input)
 	{
 		for (SmelterRecipe recipe : recipes)
 		{
-			if (recipe.getInput().getItem() == input.getItem())
+			if (recipe.getInput().matches(input))
 			{
 				return recipe.getOutput();
 			}
@@ -72,7 +85,7 @@ public class SmelterRecipeHandler
 		{
 			if (recipe.getInput() != null)
 			{
-				if (recipe.getInput().getItem() == stack.getItem())
+				if (recipe.getInput().matches(stack))
 				{
 					return recipe.getGravel();
 				}
@@ -109,14 +122,14 @@ public class SmelterRecipeHandler
 	{
 		return stack2.getItem() == stack.getItem() &&
 				(stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE || stack2.getItemDamage() == stack
-						.getItemDamage());
+				.getItemDamage());
 	}
 
 	public int getBonus(ItemStack input)
 	{
 		for (SmelterRecipe recipe : recipes)
 		{
-			if (recipe.getInput().getItem() == input.getItem())
+			if (recipe.getInput().matches(input))
 			{
 				return recipe.getBonus();
 			}
@@ -129,7 +142,7 @@ public class SmelterRecipeHandler
 	{
 		for (SmelterRecipe recipe : recipes)
 		{
-			if (recipe.getInput().getItem() == input.getItem())
+			if (recipe.getInput().matches(input))
 			{
 				return recipe.getBonusChance();
 			}
@@ -141,5 +154,10 @@ public class SmelterRecipeHandler
 	public static List<SmelterRecipe> getRecipes()
 	{
 		return smelting().recipes;
+	}
+	
+	public static Map getXPList()
+	{
+		return smelting().experienceList;
 	}
 }

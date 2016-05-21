@@ -1,13 +1,18 @@
 package net.einsteinsci.betterbeginnings.nei;
 
-import codechicken.nei.ItemList;
-import codechicken.nei.PositionedStack;
-import codechicken.nei.recipe.TemplateRecipeHandler;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import net.einsteinsci.betterbeginnings.ModMain;
 import net.einsteinsci.betterbeginnings.gui.GuiCampfire;
 import net.einsteinsci.betterbeginnings.register.RegisterItems;
 import net.einsteinsci.betterbeginnings.register.recipe.CampfirePanRecipes;
 import net.einsteinsci.betterbeginnings.register.recipe.CampfireRecipes;
+import net.einsteinsci.betterbeginnings.register.recipe.OreRecipeElement;
 import net.einsteinsci.betterbeginnings.tileentity.TileEntityCampfire;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
@@ -18,8 +23,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import scala.actors.threadpool.Arrays;
-
-import java.util.*;
+import codechicken.nei.ItemList;
+import codechicken.nei.PositionedStack;
+import codechicken.nei.recipe.TemplateRecipeHandler;
 
 public class NEICampfireRecipeHandler extends TemplateRecipeHandler
 {
@@ -29,9 +35,9 @@ public class NEICampfireRecipeHandler extends TemplateRecipeHandler
 		PositionedStack output;
 		PositionedStack pan;
 
-		public CampfireCachedRecipe(ItemStack _input, ItemStack _output, boolean _pan)
+		public CampfireCachedRecipe(OreRecipeElement _input, ItemStack _output, boolean _pan)
 		{
-			input = new PositionedStack(_input, 53, 1);
+			input = new PositionedStack(_input.getValidItems(), 53, 1);
 			output = new PositionedStack(_output, 113, 23);
 			if (_pan)
 			{
@@ -113,7 +119,7 @@ public class NEICampfireRecipeHandler extends TemplateRecipeHandler
 		{
 			Map.Entry entry = (Map.Entry)obj;
 
-			ItemStack inp = (ItemStack)entry.getKey();
+			OreRecipeElement inp = (OreRecipeElement) entry.getKey();
 			ItemStack outp = (ItemStack)entry.getValue();
 
 			if (outp.getItem() == result.getItem() &&
@@ -128,7 +134,7 @@ public class NEICampfireRecipeHandler extends TemplateRecipeHandler
 		{
 			Map.Entry entry = (Map.Entry)obj;
 
-			ItemStack inp = (ItemStack)entry.getKey();
+			OreRecipeElement inp = (OreRecipeElement) entry.getKey();
 			ItemStack outp = (ItemStack)entry.getValue();
 
 			if (outp.getItem() == result.getItem() &&
@@ -147,12 +153,10 @@ public class NEICampfireRecipeHandler extends TemplateRecipeHandler
 		{
 			Map.Entry entry = (Map.Entry)obj;
 
-			ItemStack inp = (ItemStack)entry.getKey();
+			OreRecipeElement inp = (OreRecipeElement) entry.getKey();
 			ItemStack outp = (ItemStack)entry.getValue();
 
-			if (inp.getItem() == ingredient.getItem() &&
-				(inp.getItemDamage() == OreDictionary.WILDCARD_VALUE ||
-					inp.getItemDamage() == ingredient.getItemDamage()))
+			if (inp.matches(ingredient))
 			{
 				arecipes.add(new CampfireCachedRecipe(inp, outp, false));
 			}
@@ -162,12 +166,10 @@ public class NEICampfireRecipeHandler extends TemplateRecipeHandler
 		{
 			Map.Entry entry = (Map.Entry)obj;
 
-			ItemStack inp = (ItemStack)entry.getKey();
+			OreRecipeElement inp = (OreRecipeElement) entry.getKey();
 			ItemStack outp = (ItemStack)entry.getValue();
 
-			if (inp.getItem() == ingredient.getItem() &&
-				(inp.getItemDamage() == OreDictionary.WILDCARD_VALUE ||
-					inp.getItemDamage() == ingredient.getItemDamage()))
+			if (inp.matches(ingredient))
 			{
 				arecipes.add(new CampfireCachedRecipe(inp, outp, true));
 			}

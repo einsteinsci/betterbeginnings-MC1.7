@@ -29,5 +29,5 @@ public interface IBrickOvenRecipe
 
 	ItemStack getRecipeOutput();
 
-	ItemStack[] getInputs();
+	OreRecipeElement[] getInputs();
 }
