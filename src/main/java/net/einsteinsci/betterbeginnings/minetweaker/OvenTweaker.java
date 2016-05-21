@@ -1,12 +1,8 @@
 package net.einsteinsci.betterbeginnings.minetweaker;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
@@ -15,13 +11,11 @@ import minetweaker.api.item.IItemStack;
 import minetweaker.api.minecraft.MineTweakerMC;
 import minetweaker.api.oredict.IOreDictEntry;
 import net.einsteinsci.betterbeginnings.minetweaker.util.MineTweakerUtil;
-import net.einsteinsci.betterbeginnings.register.recipe.AdvancedRecipe;
 import net.einsteinsci.betterbeginnings.register.recipe.BrickOvenRecipeHandler;
 import net.einsteinsci.betterbeginnings.register.recipe.BrickOvenShapedRecipe;
 import net.einsteinsci.betterbeginnings.register.recipe.BrickOvenShapelessRecipe;
 import net.einsteinsci.betterbeginnings.register.recipe.IBrickOvenRecipe;
 import net.einsteinsci.betterbeginnings.register.recipe.OreRecipeElement;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import scala.actors.threadpool.Arrays;
 import stanhebben.zenscript.annotations.ZenClass;
