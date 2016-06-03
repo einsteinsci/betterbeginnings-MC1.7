@@ -1,5 +1,7 @@
 package net.einsteinsci.betterbeginnings.register.recipe;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.einsteinsci.betterbeginnings.inventory.InventoryWorkbenchAdditionalMaterials;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;

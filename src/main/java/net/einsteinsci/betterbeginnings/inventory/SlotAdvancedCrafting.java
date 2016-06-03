@@ -155,6 +155,7 @@ public class SlotAdvancedCrafting extends Slot
 
 						if (isDamageable && containerStack.getItemDamage() > containerStack.getMaxDamage())
 						{
+							craftMatrix.setInventorySlotContents(i, null);
 							MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(thePlayer, containerStack));
 						}
 						else
