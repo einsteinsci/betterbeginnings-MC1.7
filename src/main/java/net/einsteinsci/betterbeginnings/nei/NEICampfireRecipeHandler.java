@@ -1,11 +1,6 @@
 package net.einsteinsci.betterbeginnings.nei;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import net.einsteinsci.betterbeginnings.ModMain;
 import net.einsteinsci.betterbeginnings.gui.GuiCampfire;
@@ -22,7 +17,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import scala.actors.threadpool.Arrays;
 import codechicken.nei.ItemList;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
@@ -50,7 +44,7 @@ public class NEICampfireRecipeHandler extends TemplateRecipeHandler
 		{
 			if (pan != null)
 			{
-				return getCycledIngredients(cycleticks / 48, Arrays.asList(new Object[] {input, pan}));
+				return getCycledIngredients(cycleticks / 48, Arrays.asList(input, pan));
 			}
 			else
 			{
