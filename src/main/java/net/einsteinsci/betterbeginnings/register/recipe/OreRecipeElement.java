@@ -15,8 +15,9 @@ public class OreRecipeElement
 {
 	public int stackSize;
 	ItemStack stack;
+	ItemStack[] validItems;
 	String oreDictionaryEntry;
-	
+
 	private ItemStack[] EMPTY_ISTACK_ARRAY = new ItemStack[0];
 
 	public OreRecipeElement(ItemStack stack)
@@ -24,6 +25,14 @@ public class OreRecipeElement
 		this.stack = stack;
 		oreDictionaryEntry = "";
 		stackSize = stack.stackSize;
+	}
+
+	public OreRecipeElement(ItemStack[] stacks, int stackSize)
+	{
+		this.stack = stacks[0];
+		oreDictionaryEntry = "";
+		this.stackSize = stackSize;
+		this.validItems = stacks;
 	}
 
 	public OreRecipeElement(String dictionaryEntry, int size)
@@ -45,6 +54,14 @@ public class OreRecipeElement
 		{
 			if (stack.getItem() == stackGiven.getItem() && (stack.getItemDamage() == stackGiven.getItemDamage() ||
 					stack.getItemDamage() == OreDictionary.WILDCARD_VALUE))
+			{
+				return true;
+			}
+		}
+		for(ItemStack validItem : OreDictionary.getOres(oreDictionaryEntry))
+		{
+			if (validItem.getItem() == stackGiven.getItem() && (validItem.getItemDamage() == stackGiven.getItemDamage() ||
+					validItem.getItemDamage() == OreDictionary.WILDCARD_VALUE))
 			{
 				return true;
 			}
@@ -71,6 +88,14 @@ public class OreRecipeElement
 				return true;
 			}
 		}
+		for(ItemStack validItem : OreDictionary.getOres(oreDictionaryEntry))
+		{
+			if (validItem.getItem() == stackGiven.getItem() && (validItem.getItemDamage() == stackGiven.getItemDamage() ||
+					validItem.getItemDamage() == OreDictionary.WILDCARD_VALUE))
+			{
+				return true;
+			}
+		}
 		for (ItemStack valid : OreDictionary.getOres(oreDictionaryEntry))
 		{
 			if (valid.getItem() == stackGiven.getItem() && (valid.getItemDamage() == stackGiven.getItemDamage() ||
@@ -90,7 +115,7 @@ public class OreRecipeElement
 			if(input1.stack != null && input2.stack != null)
 			{
 				if (input1.stack.getItem() == input2.stack.getItem() && (input1.stack.getItemDamage() == input2.stack.getItemDamage() 
-					|| input1.stack.getItemDamage() == OreDictionary.WILDCARD_VALUE || input2.stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) && input1.oreDictionaryEntry.equals(input2.oreDictionaryEntry))
+						|| input1.stack.getItemDamage() == OreDictionary.WILDCARD_VALUE || input2.stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) && input1.oreDictionaryEntry.equals(input2.oreDictionaryEntry))
 				{
 					return true;
 				}
@@ -105,6 +130,10 @@ public class OreRecipeElement
 
 	public ItemStack[] getValidItems()
 	{
+		if (validItems != null)
+		{
+			return validItems;
+		}
 		List<ItemStack> buf = new ArrayList<ItemStack>();
 		if(stack != null)
 		{
@@ -129,7 +158,7 @@ public class OreRecipeElement
 
 	public ItemStack getFirst()
 	{
-		ItemStack zero = !oreDictionaryEntry.equals("") ? OreDictionary.getOres(oreDictionaryEntry).get(0) : stack;
+		ItemStack zero = (!oreDictionaryEntry.isEmpty() && oreDictionaryEntry != null) ? OreDictionary.getOres(oreDictionaryEntry).get(0) : stack;
 		return new ItemStack(zero.getItem(), stackSize, zero.getItemDamage());
 	}
 }

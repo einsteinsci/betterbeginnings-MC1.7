@@ -8,16 +8,18 @@ import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
+import minetweaker.api.item.IngredientStack;
 import minetweaker.api.minecraft.MineTweakerMC;
 import minetweaker.api.oredict.IOreDictEntry;
+import minetweaker.api.oredict.IngredientOreDict;
 import net.einsteinsci.betterbeginnings.minetweaker.util.MineTweakerUtil;
 import net.einsteinsci.betterbeginnings.register.recipe.AdvancedCraftingHandler;
 import net.einsteinsci.betterbeginnings.register.recipe.AdvancedRecipe;
-import net.einsteinsci.betterbeginnings.register.recipe.BrickOvenRecipeHandler;
-import net.einsteinsci.betterbeginnings.register.recipe.BrickOvenShapedRecipe;
-import net.einsteinsci.betterbeginnings.register.recipe.IBrickOvenRecipe;
 import net.einsteinsci.betterbeginnings.register.recipe.OreRecipeElement;
 import net.minecraft.item.ItemStack;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -56,9 +58,14 @@ public class AdvancedCraftingTweaker
 			for(int col = 0; col < 3; col++)
 			{
 				IIngredient ingredient = inputs[row][col];
+				
 				if(ingredient instanceof IOreDictEntry)
 				{
-					convertedIngredients[row][col] = new OreRecipeElement(((IOreDictEntry) ingredient).getName(), 1);
+					convertedIngredients[row][col] = new OreRecipeElement(((IOreDictEntry) ingredient).getName(), ingredient.getAmount());
+				}
+				else if(ingredient instanceof IngredientOreDict)
+				{
+					convertedIngredients[row][col] = new OreRecipeElement((String) ingredient.getInternal(), ingredient.getAmount());
 				}
 				else if(ingredient instanceof IItemStack)
 				{
@@ -77,11 +84,20 @@ public class AdvancedCraftingTweaker
 			IIngredient ingredient = catalysts[i];
 			if(ingredient instanceof IOreDictEntry)
 			{
-				convertedCatalysts[i] = new OreRecipeElement(((IOreDictEntry) ingredient).getName(), 1);
+				convertedCatalysts[i] = new OreRecipeElement(((IOreDictEntry) ingredient).getName(), ingredient.getAmount());
 			}
 			else if(ingredient instanceof IItemStack)
 			{
 				convertedCatalysts[i] = new OreRecipeElement(MineTweakerMC.getItemStack(ingredient));
+			}
+			else if (ingredient instanceof IngredientStack)
+			{
+				ItemStack[] validItems = MineTweakerMC.getItemStacks(ingredient.getItems());
+				for(ItemStack stack : validItems)
+				{
+					stack.stackSize = ingredient.getAmount();
+				}
+				convertedCatalysts[i] = new OreRecipeElement(validItems, ingredient.getAmount());
 			}
 		}
 		return convertedCatalysts;
@@ -225,7 +241,6 @@ public class AdvancedCraftingTweaker
 					{
 						if(!OreRecipeElement.areOreRecipeElementsEqual(inputs[o], recipe.getRecipeItems()[o]))
 						{
-							System.out.println(recipe.getNeededMaterials().length + "," + catalysts.length);
 							for (int m = 0; m < catalysts.length; m++)
 							{
 								if(!OreRecipeElement.areOreRecipeElementsEqual(catalysts[m], recipe.getNeededMaterials()[m]))

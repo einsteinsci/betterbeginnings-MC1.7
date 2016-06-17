@@ -73,7 +73,6 @@ public class ItemKnife extends ItemTool
 	{
 		ItemStack res = itemStack.copy();
 		res.setItemDamage(itemStack.getItemDamage() + 1);
-
 		return res;
 	}
 
