@@ -1,6 +1,7 @@
 package net.einsteinsci.betterbeginnings.minetweaker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,7 +18,6 @@ import net.einsteinsci.betterbeginnings.register.recipe.BrickOvenShapelessRecipe
 import net.einsteinsci.betterbeginnings.register.recipe.IBrickOvenRecipe;
 import net.einsteinsci.betterbeginnings.register.recipe.OreRecipeElement;
 import net.minecraft.item.ItemStack;
-import scala.actors.threadpool.Arrays;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
