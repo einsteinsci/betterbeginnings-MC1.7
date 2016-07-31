@@ -54,8 +54,8 @@ public class NEIAdvancedCraftingHandler extends TemplateRecipeHandler
 				{
 					continue;
 				}
-
-				catalysts[i] = new PositionedStack(side[i].getValidItems(), 11, 23 + i * 18);
+				
+				catalysts[i] = new PositionedStack(side[i].getValidItems(side[i].stackSize), 11, 23 + i * 18);
 			}
 		}
 

@@ -440,7 +440,7 @@ public class RegisterRecipes
 
 			// Comparator
 			AdvancedCraftingHandler.addAdvancedRecipe(new ItemStack(Items.comparator),
-				new Object[] {"dustRedstone, 1"},
+				new Object[] {"dustRedstone", 1},
 				" i ", "iQi", "###",
 				'i', Blocks.redstone_torch,
 				'Q', "gemQuartz",

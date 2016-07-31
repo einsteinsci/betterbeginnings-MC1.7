@@ -4,9 +4,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Created by einsteinsci on 11/18/2014.
@@ -130,11 +129,17 @@ public class OreRecipeElement
 
 	public ItemStack[] getValidItems()
 	{
+		return getValidItems(1);
+	}
+	
+	//Used for catalysts, so that stacksizes are correct
+	public ItemStack[] getValidItems(int stackSize)
+	{
+		List<ItemStack> buf = new ArrayList<ItemStack>();
 		if (validItems != null)
 		{
-			return validItems;
+			Collections.addAll(buf, validItems);
 		}
-		List<ItemStack> buf = new ArrayList<ItemStack>();
 		if(stack != null)
 		{
 			buf.add(stack);
@@ -142,6 +147,10 @@ public class OreRecipeElement
 		if(!oreDictionaryEntry.equals(""))
 		{
 			buf.addAll(OreDictionary.getOres(oreDictionaryEntry));
+		}
+		for(ItemStack validItem : buf)
+		{
+			validItem.stackSize = stackSize;
 		}
 		return buf.toArray(EMPTY_ISTACK_ARRAY);
 	}
